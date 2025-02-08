@@ -1,0 +1,22 @@
+{
+  "video_path": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "video"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "数字人视频"
+    }
+  },
+  "audio_path": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "video"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "数字人音频"
+    }
+  }
+}

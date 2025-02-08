@@ -531,6 +531,7 @@ class TTSGenerateFrame(wx.Frame):
                 ffmpeg
                 .input(video_path)
                 .output(out_path,format='mp3',acodec='libmp3lame',ac=2,ar='44100')
+                .overwrite_output()
                 .run(quiet=True)
             )
         except Exception as e:

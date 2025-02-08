@@ -13,6 +13,7 @@ a = Analysis(
         ('loras', 'loras'),
         ('workflows', 'workflows'),
         ('vid_workflows', 'vid_workflows'),
+        ('hm_workflows', 'hm_workflows'),
         ('audiolist', 'audiolist'),
         ('last_folder_path.json', '.'),
         ('checkweb.json', '.'),
