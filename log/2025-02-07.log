@@ -1,0 +1,475 @@
+2025-02-07 00:57:35,611 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:49704/devtools/browser/dced7fbc-ba15-49d1-ac5f-3473f9b81080', 'http': '127.0.0.1:49704', 'coreVersion': '130', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/130-arm/chromedriver', 'seq': 1283, 'name': 'viduCreativeCat', 'remark': '', 'groupId': '2c9bc0618eda6f67018edcc499794afb', 'pid': 78456}}
+2025-02-07 00:57:35,614 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/130-arm/chromedriver
+2025-02-07 00:57:35,618 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:49704
+2025-02-07 00:57:36,225 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:68 - ERROR: 启动webdriver失败，重试
+2025-02-07 00:57:36,225 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:69 - ERROR: Message: unknown error: cannot connect to chrome at 127.0.0.1:49704
+from session not created: This version of ChromeDriver only supports Chrome version 112
+Current browser version is 130.0.6723.102
+Stacktrace:
+0   chromedriver                        0x0000000102a4fae8 chromedriver + 4958952
+1   chromedriver                        0x0000000102a477b3 chromedriver + 4925363
+2   chromedriver                        0x00000001026091d6 chromedriver + 475606
+3   chromedriver                        0x0000000102639ef0 chromedriver + 675568
+4   chromedriver                        0x0000000102630928 chromedriver + 637224
+5   chromedriver                        0x000000010267c6e9 chromedriver + 947945
+6   chromedriver                        0x000000010267ba7f chromedriver + 944767
+7   chromedriver                        0x00000001026729e3 chromedriver + 907747
+8   chromedriver                        0x000000010263caef chromedriver + 686831
+9   chromedriver                        0x000000010263e00e chromedriver + 692238
+10  chromedriver                        0x0000000102a0b9ad chromedriver + 4680109
+11  chromedriver                        0x0000000102a10c12 chromedriver + 4701202
+12  chromedriver                        0x0000000102a1779f chromedriver + 4728735
+13  chromedriver                        0x0000000102a11b7a chromedriver + 4705146
+14  chromedriver                        0x00000001029e427e chromedriver + 4518526
+15  chromedriver                        0x0000000102a31908 chromedriver + 4835592
+16  chromedriver                        0x0000000102a31a87 chromedriver + 4835975
+17  chromedriver                        0x0000000102a4100f chromedriver + 4898831
+18  libsystem_pthread.dylib             0x00007ff813f3c253 _pthread_start + 99
+19  libsystem_pthread.dylib             0x00007ff813f37bef thread_start + 15
+Traceback (most recent call last):
+  File "/Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py", line 64, in get_driver_internal
+    driver = uc.Chrome(port=port,driver_executable_path=os.path.join(base_root_path, 'chrome_driver/chromedriver'))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/joyy/Desktop/ResTool/tiktok-tools/und/__init__.py", line 422, in __init__
+    super(Chrome, self).__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/chrome/webdriver.py", line 80, in __init__
+    super().__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/chromium/webdriver.py", line 104, in __init__
+    super().__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 286, in __init__
+    self.start_session(capabilities, browser_profile)
+  File "/Users/joyy/Desktop/ResTool/tiktok-tools/und/__init__.py", line 682, in start_session
+    super(selenium.webdriver.chrome.webdriver.WebDriver, self).start_session(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 378, in start_session
+    response = self.execute(Command.NEW_SESSION, parameters)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 440, in execute
+    self.error_handler.check_response(response)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 245, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: unknown error: cannot connect to chrome at 127.0.0.1:49704
+from session not created: This version of ChromeDriver only supports Chrome version 112
+Current browser version is 130.0.6723.102
+Stacktrace:
+0   chromedriver                        0x0000000102a4fae8 chromedriver + 4958952
+1   chromedriver                        0x0000000102a477b3 chromedriver + 4925363
+2   chromedriver                        0x00000001026091d6 chromedriver + 475606
+3   chromedriver                        0x0000000102639ef0 chromedriver + 675568
+4   chromedriver                        0x0000000102630928 chromedriver + 637224
+5   chromedriver                        0x000000010267c6e9 chromedriver + 947945
+6   chromedriver                        0x000000010267ba7f chromedriver + 944767
+7   chromedriver                        0x00000001026729e3 chromedriver + 907747
+8   chromedriver                        0x000000010263caef chromedriver + 686831
+9   chromedriver                        0x000000010263e00e chromedriver + 692238
+10  chromedriver                        0x0000000102a0b9ad chromedriver + 4680109
+11  chromedriver                        0x0000000102a10c12 chromedriver + 4701202
+12  chromedriver                        0x0000000102a1779f chromedriver + 4728735
+13  chromedriver                        0x0000000102a11b7a chromedriver + 4705146
+14  chromedriver                        0x00000001029e427e chromedriver + 4518526
+15  chromedriver                        0x0000000102a31908 chromedriver + 4835592
+16  chromedriver                        0x0000000102a31a87 chromedriver + 4835975
+17  chromedriver                        0x0000000102a4100f chromedriver + 4898831
+18  libsystem_pthread.dylib             0x00007ff813f3c253 _pthread_start + 99
+19  libsystem_pthread.dylib             0x00007ff813f37bef thread_start + 15
+
+2025-02-07 00:57:40,459 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:49704/devtools/browser/dced7fbc-ba15-49d1-ac5f-3473f9b81080', 'http': '127.0.0.1:49704', 'coreVersion': '130', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/130-arm/chromedriver', 'seq': 1283, 'name': 'viduCreativeCat', 'remark': '', 'groupId': '2c9bc0618eda6f67018edcc499794afb', 'pid': 78456}}
+2025-02-07 00:57:40,459 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/130-arm/chromedriver
+2025-02-07 00:57:40,460 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:49704
+2025-02-07 00:57:41,039 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:68 - ERROR: 启动webdriver失败，重试
+2025-02-07 00:57:41,039 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:69 - ERROR: Message: unknown error: cannot connect to chrome at 127.0.0.1:49704
+from session not created: This version of ChromeDriver only supports Chrome version 112
+Current browser version is 130.0.6723.102
+Stacktrace:
+0   chromedriver                        0x0000000104af9ae8 chromedriver + 4958952
+1   chromedriver                        0x0000000104af17b3 chromedriver + 4925363
+2   chromedriver                        0x00000001046b31d6 chromedriver + 475606
+3   chromedriver                        0x00000001046e3ef0 chromedriver + 675568
+4   chromedriver                        0x00000001046da928 chromedriver + 637224
+5   chromedriver                        0x00000001047266e9 chromedriver + 947945
+6   chromedriver                        0x0000000104725a7f chromedriver + 944767
+7   chromedriver                        0x000000010471c9e3 chromedriver + 907747
+8   chromedriver                        0x00000001046e6aef chromedriver + 686831
+9   chromedriver                        0x00000001046e800e chromedriver + 692238
+10  chromedriver                        0x0000000104ab59ad chromedriver + 4680109
+11  chromedriver                        0x0000000104abac12 chromedriver + 4701202
+12  chromedriver                        0x0000000104ac179f chromedriver + 4728735
+13  chromedriver                        0x0000000104abbb7a chromedriver + 4705146
+14  chromedriver                        0x0000000104a8e27e chromedriver + 4518526
+15  chromedriver                        0x0000000104adb908 chromedriver + 4835592
+16  chromedriver                        0x0000000104adba87 chromedriver + 4835975
+17  chromedriver                        0x0000000104aeb00f chromedriver + 4898831
+18  libsystem_pthread.dylib             0x00007ff813f3c253 _pthread_start + 99
+19  libsystem_pthread.dylib             0x00007ff813f37bef thread_start + 15
+Traceback (most recent call last):
+  File "/Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py", line 64, in get_driver_internal
+    driver = uc.Chrome(port=port,driver_executable_path=os.path.join(base_root_path, 'chrome_driver/chromedriver'))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/joyy/Desktop/ResTool/tiktok-tools/und/__init__.py", line 422, in __init__
+    super(Chrome, self).__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/chrome/webdriver.py", line 80, in __init__
+    super().__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/chromium/webdriver.py", line 104, in __init__
+    super().__init__(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 286, in __init__
+    self.start_session(capabilities, browser_profile)
+  File "/Users/joyy/Desktop/ResTool/tiktok-tools/und/__init__.py", line 682, in start_session
+    super(selenium.webdriver.chrome.webdriver.WebDriver, self).start_session(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 378, in start_session
+    response = self.execute(Command.NEW_SESSION, parameters)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/webdriver.py", line 440, in execute
+    self.error_handler.check_response(response)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/selenium/webdriver/remote/errorhandler.py", line 245, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: unknown error: cannot connect to chrome at 127.0.0.1:49704
+from session not created: This version of ChromeDriver only supports Chrome version 112
+Current browser version is 130.0.6723.102
+Stacktrace:
+0   chromedriver                        0x0000000104af9ae8 chromedriver + 4958952
+1   chromedriver                        0x0000000104af17b3 chromedriver + 4925363
+2   chromedriver                        0x00000001046b31d6 chromedriver + 475606
+3   chromedriver                        0x00000001046e3ef0 chromedriver + 675568
+4   chromedriver                        0x00000001046da928 chromedriver + 637224
+5   chromedriver                        0x00000001047266e9 chromedriver + 947945
+6   chromedriver                        0x0000000104725a7f chromedriver + 944767
+7   chromedriver                        0x000000010471c9e3 chromedriver + 907747
+8   chromedriver                        0x00000001046e6aef chromedriver + 686831
+9   chromedriver                        0x00000001046e800e chromedriver + 692238
+10  chromedriver                        0x0000000104ab59ad chromedriver + 4680109
+11  chromedriver                        0x0000000104abac12 chromedriver + 4701202
+12  chromedriver                        0x0000000104ac179f chromedriver + 4728735
+13  chromedriver                        0x0000000104abbb7a chromedriver + 4705146
+14  chromedriver                        0x0000000104a8e27e chromedriver + 4518526
+15  chromedriver                        0x0000000104adb908 chromedriver + 4835592
+16  chromedriver                        0x0000000104adba87 chromedriver + 4835975
+17  chromedriver                        0x0000000104aeb00f chromedriver + 4898831
+18  libsystem_pthread.dylib             0x00007ff813f3c253 _pthread_start + 99
+19  libsystem_pthread.dylib             0x00007ff813f37bef thread_start + 15
+
+2025-02-07 01:12:10,459 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:58267/devtools/browser/724bd51e-d259-4960-9fde-5dc95da00874', 'http': '127.0.0.1:58267', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 79018}}
+2025-02-07 01:12:10,460 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 01:12:10,461 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:58267
+2025-02-07 01:12:17,279 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 01:12:17,280 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 01:12:18,367 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 01:12:29,511 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:34,561 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:36,595 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:38,643 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:40,704 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:42,756 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:44,810 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:46,843 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:48,905 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 01:12:48,964 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 01:13:32,217 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}
+2025-02-07 01:13:40,448 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:60549/devtools/browser/fce7f10a-0dce-4872-b087-0d55a72efaa7', 'http': '127.0.0.1:60549', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 79176}}
+2025-02-07 01:13:40,450 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 01:13:40,451 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:60549
+2025-02-07 01:13:45,263 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 01:13:45,264 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 01:13:45,999 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 01:13:57,084 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 01:14:02,171 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 01:14:04,247 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 01:14:06,283 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 01:14:08,312 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 01:14:10,378 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 01:14:10,462 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 01:14:53,963 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}
+2025-02-07 01:15:02,114 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:62110/devtools/browser/9d3663a6-a990-4f4a-b431-c3f7812298c2', 'http': '127.0.0.1:62110', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 79271}}
+2025-02-07 01:15:02,114 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 01:15:02,115 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:62110
+2025-02-07 01:15:07,060 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 01:15:07,060 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 01:15:07,745 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 01:15:18,848 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 01:15:23,932 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 01:15:25,993 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 01:15:28,053 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 01:15:28,100 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 01:16:11,681 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}
+2025-02-07 02:01:00,151 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:51637/devtools/browser/647d327d-964f-4479-ba17-11ce6b0bbef1', 'http': '127.0.0.1:51637', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 81905}}
+2025-02-07 02:01:00,152 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 02:01:00,152 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:51637
+2025-02-07 02:01:04,024 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 02:01:04,025 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 02:01:04,724 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 03:07:52,600 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:64265/devtools/browser/22701816-5218-46ea-81a4-9858681e575a', 'http': '127.0.0.1:64265', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 83880}}
+2025-02-07 03:07:52,602 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 03:07:52,602 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:64265
+2025-02-07 03:07:56,468 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 03:07:56,468 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 03:08:00,781 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 03:08:11,882 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:13:48,210 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:51892/devtools/browser/31647326-eb1d-43e8-8738-a8066eb3ccab', 'http': '127.0.0.1:51892', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 84183}}
+2025-02-07 03:13:48,211 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 03:13:48,212 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:51892
+2025-02-07 03:13:52,070 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 03:13:52,071 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 03:13:56,449 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 03:14:07,513 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:14:12,571 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:14:14,607 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:14:16,638 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:14:18,698 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:14:20,741 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_1.mp4
+2025-02-07 03:14:20,836 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 03:15:04,075 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}
+2025-02-07 03:15:12,287 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:53702/devtools/browser/8826c1a1-aac7-44be-a357-c809ab730d0d', 'http': '127.0.0.1:53702', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 84349}}
+2025-02-07 03:15:12,288 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 03:15:12,288 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:53702
+2025-02-07 03:15:16,489 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 03:15:16,490 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 03:15:22,196 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 03:15:33,310 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 03:15:38,348 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 03:15:40,382 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 03:15:42,444 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 03:15:44,509 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_2.mp4
+2025-02-07 03:15:44,549 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 03:16:30,375 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}
+2025-02-07 03:16:38,360 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:54947/devtools/browser/a55b54eb-af0e-4f13-9e0d-712329eeb835', 'http': '127.0.0.1:54947', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 84448}}
+2025-02-07 03:16:38,361 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 03:16:38,361 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:54947
+2025-02-07 03:16:42,952 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 03:16:42,952 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 03:16:50,443 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 03:17:01,557 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 03:17:06,626 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 03:17:08,697 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 03:17:10,754 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result_3.mp4
+2025-02-07 03:17:10,832 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 03:17:54,087 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}
+2025-02-07 16:29:39,814 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:63569/devtools/browser/bae9a1b2-f43f-489d-81dd-602c2504f245', 'http': '127.0.0.1:63569', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 95194}}
+2025-02-07 16:29:39,815 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 16:29:39,816 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:63569
+2025-02-07 16:29:43,597 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 16:29:43,597 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 16:29:46,728 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 16:29:57,853 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:00,881 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:01,909 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:02,977 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:06,012 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:08,063 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:10,090 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:12,131 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:14,182 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:16,235 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:18,293 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:20,341 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:22,414 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:24,469 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:26,531 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:28,591 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:30,652 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:32,689 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:34,747 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:36,787 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:38,817 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:30:38,864 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 16:31:14,306 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:90 - INFO: 获取元素有点慢:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:31:25,728 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:87 - ERROR: 获取元素失败:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:31:35,967 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:90 - INFO: 获取元素有点慢:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:31:47,432 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:87 - ERROR: 获取元素失败:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:37:30,153 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:63569/devtools/browser/bae9a1b2-f43f-489d-81dd-602c2504f245', 'http': '127.0.0.1:63569', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 95194}}
+2025-02-07 16:37:30,154 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 16:37:30,155 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:63569
+2025-02-07 16:37:33,942 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 16:37:33,942 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 16:37:35,855 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 16:37:46,965 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:37:52,026 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:37:54,100 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:37:56,193 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:37:58,266 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:00,319 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:02,367 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:04,415 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:06,462 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:08,508 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:10,572 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:12,637 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:14,682 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:16,747 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:18,826 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:20,917 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:23,029 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:25,063 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:27,118 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:29,156 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:31,188 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:33,239 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:35,299 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:37,371 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:39,428 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:41,487 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:38:41,523 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 16:56:12,082 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:59563/devtools/browser/97c93cae-00c2-4fb7-8f9b-2b4ec0be7d99', 'http': '127.0.0.1:59563', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 96240}}
+2025-02-07 16:56:12,083 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 16:56:12,084 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:59563
+2025-02-07 16:56:24,773 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 16:56:24,774 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 16:56:57,339 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 16:57:08,457 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:13,551 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:15,602 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:17,681 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:19,713 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:21,786 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:23,826 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:25,889 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:27,946 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:29,983 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:32,028 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:34,057 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:36,111 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:38,177 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:40,228 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:42,291 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:44,352 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:46,440 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:48,506 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:50,590 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:52,644 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 16:57:52,690 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 16:58:29,564 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:90 - INFO: 获取元素有点慢:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:58:41,018 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:87 - ERROR: 获取元素失败:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:58:51,270 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:90 - INFO: 获取元素有点慢:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 16:59:02,817 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:87 - ERROR: 获取元素失败:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 17:05:17,130 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:64489/devtools/browser/2a013eff-45b9-4215-a59f-960a05726d42', 'http': '127.0.0.1:64489', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 96581}}
+2025-02-07 17:05:17,131 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 17:05:17,132 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:64489
+2025-02-07 17:05:20,878 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 17:05:20,878 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 17:05:21,676 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 17:05:32,772 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:37,850 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:39,903 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:41,939 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:43,962 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:46,014 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:48,064 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:50,126 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:52,175 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:54,206 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:56,245 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:05:56,305 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 17:06:29,705 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:90 - INFO: 获取元素有点慢:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 17:06:41,187 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:87 - ERROR: 获取元素失败:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 17:06:51,456 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:90 - INFO: 获取元素有点慢:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 17:07:02,802 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:87 - ERROR: 获取元素失败:(//*[@class="TUXButton TUXButton--default TUXButton--large TUXButton--primary"])
+2025-02-07 17:16:19,135 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:53751/devtools/browser/b187b993-6c06-4b63-88d0-0323186c5561', 'http': '127.0.0.1:53751', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 97006}}
+2025-02-07 17:16:19,142 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 17:16:19,142 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:53751
+2025-02-07 17:16:22,988 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 17:16:22,989 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 17:16:31,818 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 17:16:42,940 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:16:48,023 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:16:50,073 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:16:52,126 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:16:54,181 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:16:56,233 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:16:58,293 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:00,337 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:02,385 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:04,449 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:06,514 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:08,596 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:10,657 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:12,701 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:14,769 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:16,832 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:18,863 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:20,922 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:22,953 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:25,019 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:27,058 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:29,088 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:17:29,113 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 17:22:20,378 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:56047/devtools/browser/5ec1f8ac-4231-4b7e-b5d4-2120c22907a6', 'http': '127.0.0.1:56047', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 97255}}
+2025-02-07 17:22:20,379 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 17:22:20,379 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:56047
+2025-02-07 17:22:24,073 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 17:22:24,076 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 17:22:53,273 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 17:23:16,279 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:19,310 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:20,386 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:21,411 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:22,424 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:23,446 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:24,469 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:25,490 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:26,507 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:27,528 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:28,548 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:29,574 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:30,595 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:31,619 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:32,630 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:33,654 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:34,672 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:35,696 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:36,724 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:37,745 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:38,771 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:39,790 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:40,809 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:23:41,830 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:63 - INFO: 等待上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:01,673 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:59332/devtools/browser/a184fa7d-79f1-4e7c-87b2-422d0a2d6bcf', 'http': '127.0.0.1:59332', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 97467}}
+2025-02-07 17:27:01,674 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 17:27:01,676 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:59332
+2025-02-07 17:27:05,608 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 17:27:05,608 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 17:27:07,134 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 17:27:18,233 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:23,293 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:25,357 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:27,425 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:29,481 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:31,529 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:33,572 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:35,597 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:37,643 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:39,672 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:41,743 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:43,777 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:45,842 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:47,906 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:49,938 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:51,998 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:54,059 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:56,108 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:27:58,171 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:28:00,218 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:28:02,246 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:28:02,292 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 17:32:04,764 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:60914/devtools/browser/bb8d50a6-490e-4334-8d80-95220954bda1', 'http': '127.0.0.1:60914', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 6141, 'name': 'COPS7', 'remark': 'COPS7', 'groupId': '2c9bc0478ff1f9d7019006fdeb6a6fb1', 'pid': 97699}}
+2025-02-07 17:32:04,765 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-02-07 17:32:04,765 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:60914
+2025-02-07 17:32:08,450 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:45 - INFO: 进入视频发布页面
+2025-02-07 17:32:08,450 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.tiktok.com/tiktokstudio/upload?from=upload
+2025-02-07 17:32:11,114 - /Users/joyy/Desktop/ResTool/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.tiktok.com/tiktokstudio/upload?from=upload,TikTok Studio
+2025-02-07 17:32:22,209 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:57 - INFO: 开始上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:27,277 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:29,332 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:31,390 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:33,444 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:35,491 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:37,536 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:39,578 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:41,619 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:43,680 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:45,735 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:47,782 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:49,852 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:51,920 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:54,010 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:56,061 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:32:58,116 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:33:00,165 - /Users/joyy/Desktop/ResTool/tiktok-tools/tiktok_publish_video.py:75 - INFO: 正在上传视频：/Users/joyy/Desktop/testlib/xxxxx2/output/result.mp4
+2025-02-07 17:33:00,216 - /Users/joyy/Desktop/ResTool/tiktok-tools/start.py:54 - INFO: 上传视频成功
+2025-02-07 17:33:51,909 - /Users/joyy/Desktop/ResTool/bit_api.py:21 - INFO: 关闭browser:{'success': True, 'data': '操作成功'}

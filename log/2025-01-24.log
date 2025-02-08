@@ -1,0 +1,3 @@
+2025-01-24 16:10:42,133 - /Users/joyy/Desktop/ResTool/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:55456/devtools/browser/eb0bc571-561f-4171-b136-cd0bee615374', 'http': '127.0.0.1:55456', 'coreVersion': '112', 'driver': '/Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 1281, 'name': 'tiktok测试2', 'remark': 'eden_cc0088', 'groupId': '2c9bc058900bfc07019010afee9464f2', 'pid': 13344}}
+2025-01-24 16:10:42,134 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:43 - INFO: /Users/joyy/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2025-01-24 16:10:42,134 - /Users/joyy/Desktop/ResTool/tiktok-tools/chrome_utils.py:44 - INFO: 127.0.0.1:55456
