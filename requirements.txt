@@ -1,0 +1,16 @@
+wxPython
+simpleaudio
+requests
+deepl
+matplotlib
+pydub
+opencv-python
+ryry-cli
+ffmpeg-python
+mutagen
+yt_dlp
+PyYAML
+selenium
+websockets
+torchvision
+pyperclip
