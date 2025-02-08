@@ -1,0 +1,6 @@
+2024-07-29 10:12:00,751 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:61980/devtools/browser/142aaf7d-9942-44a1-bc47-4d5b1d36f1ad', 'http': '127.0.0.1:61980', 'coreVersion': '112', 'driver': '/Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver', 'seq': 62, 'name': '', 'remark': '', 'pid': 22060}}
+2024-07-29 10:12:00,751 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:37 - INFO: 127.0.0.1:61980
+2024-07-29 10:12:00,751 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:41 - INFO: /Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112-arm/chromedriver
+2024-07-29 10:12:00,751 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:42 - INFO: 127.0.0.1:61980
+2024-07-29 10:12:01,434 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.bing.com/turing/captcha/challenge
+2024-07-29 10:12:07,328 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.bing.com/turing/captcha/challenge,

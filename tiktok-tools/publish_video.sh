@@ -1,0 +1,1 @@
+python start.py --env_id=ozqaqi234930 --video_root_path=/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/ozqaqi234930 --video_name=new.mp4 --node_ip=23.230.197.151

@@ -1,0 +1,1 @@
+python start.py --env_id=teoxbe920086 --node_ip=23.230.197.151 --oper_type=hide_video

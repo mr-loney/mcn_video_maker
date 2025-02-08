@@ -1,0 +1,100 @@
+2024-07-28 19:12:08,221 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:61314/devtools/browser/d5465c42-3b3f-45b5-9849-01e528595e41', 'http': '127.0.0.1:61314', 'coreVersion': '112', 'driver': '/Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver', 'seq': 61, 'name': '', 'remark': '123', 'pid': 8843}}
+2024-07-28 19:12:08,221 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:40 - INFO: /Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver
+2024-07-28 19:12:08,221 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:41 - INFO: 127.0.0.1:61314
+2024-07-28 19:12:08,792 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.baidu.com/
+2024-07-28 19:12:10,092 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.baidu.com/,百度一下，你就知道
+2024-07-28 19:12:53,204 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:61550/devtools/browser/1a203531-0686-4997-a276-12613d80203b', 'http': '127.0.0.1:61550', 'coreVersion': '112', 'driver': '/Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver', 'seq': 61, 'name': '', 'remark': '123', 'pid': 8913}}
+2024-07-28 19:12:53,204 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:40 - INFO: /Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver
+2024-07-28 19:12:53,204 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:41 - INFO: 127.0.0.1:61550
+2024-07-28 19:14:28,479 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:61858/devtools/browser/739391e0-3502-48d8-a11d-fba2f80fbd60', 'http': '127.0.0.1:61858', 'coreVersion': '126', 'driver': '', 'seq': 61, 'name': '', 'remark': '123', 'pid': 8972}}
+2024-07-28 19:14:28,481 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:38 - ERROR: 打开浏览器窗口失败
+2024-07-28 19:15:22,693 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:61858/devtools/browser/739391e0-3502-48d8-a11d-fba2f80fbd60', 'http': '127.0.0.1:61858', 'coreVersion': '126', 'driver': '', 'seq': 61, 'name': '', 'remark': '123', 'pid': 8972}}
+2024-07-28 19:15:22,696 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:37 - INFO: 127.0.0.1:61858
+2024-07-28 19:15:22,697 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:39 - ERROR: 打开浏览器窗口失败
+2024-07-28 19:17:30,281 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:65 - ERROR: 启动webdriver失败，重试
+2024-07-28 19:17:30,281 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:66 - ERROR: Message: unknown error: cannot connect to chrome at 127.0.0.1:61858
+from session not created: This version of ChromeDriver only supports Chrome version 112
+Current browser version is 126.0.6478.120
+Stacktrace:
+0   chromedriver                        0x00000001012d5ae8 chromedriver + 4958952
+1   chromedriver                        0x00000001012cd7b3 chromedriver + 4925363
+2   chromedriver                        0x0000000100e8f1d6 chromedriver + 475606
+3   chromedriver                        0x0000000100ebfef0 chromedriver + 675568
+4   chromedriver                        0x0000000100eb6928 chromedriver + 637224
+5   chromedriver                        0x0000000100f026e9 chromedriver + 947945
+6   chromedriver                        0x0000000100f01a7f chromedriver + 944767
+7   chromedriver                        0x0000000100ef89e3 chromedriver + 907747
+8   chromedriver                        0x0000000100ec2aef chromedriver + 686831
+9   chromedriver                        0x0000000100ec400e chromedriver + 692238
+10  chromedriver                        0x00000001012919ad chromedriver + 4680109
+11  chromedriver                        0x0000000101296c12 chromedriver + 4701202
+12  chromedriver                        0x000000010129d79f chromedriver + 4728735
+13  chromedriver                        0x0000000101297b7a chromedriver + 4705146
+14  chromedriver                        0x000000010126a27e chromedriver + 4518526
+15  chromedriver                        0x00000001012b7908 chromedriver + 4835592
+16  chromedriver                        0x00000001012b7a87 chromedriver + 4835975
+17  chromedriver                        0x00000001012c700f chromedriver + 4898831
+18  libsystem_pthread.dylib             0x00007ff8125e018b _pthread_start + 99
+19  libsystem_pthread.dylib             0x00007ff8125dbae3 thread_start + 15
+Traceback (most recent call last):
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py", line 61, in get_driver_internal
+    driver = uc.Chrome(port=port,driver_executable_path='chrome_driver/chromedriver')
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/und/__init__.py", line 422, in __init__
+    super(Chrome, self).__init__(
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/venv/lib/python3.9/site-packages/selenium/webdriver/chrome/webdriver.py", line 80, in __init__
+    super().__init__(
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/venv/lib/python3.9/site-packages/selenium/webdriver/chromium/webdriver.py", line 104, in __init__
+    super().__init__(
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/venv/lib/python3.9/site-packages/selenium/webdriver/remote/webdriver.py", line 286, in __init__
+    self.start_session(capabilities, browser_profile)
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/und/__init__.py", line 682, in start_session
+    super(selenium.webdriver.chrome.webdriver.WebDriver, self).start_session(
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/venv/lib/python3.9/site-packages/selenium/webdriver/remote/webdriver.py", line 378, in start_session
+    response = self.execute(Command.NEW_SESSION, parameters)
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/venv/lib/python3.9/site-packages/selenium/webdriver/remote/webdriver.py", line 440, in execute
+    self.error_handler.check_response(response)
+  File "/Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/venv/lib/python3.9/site-packages/selenium/webdriver/remote/errorhandler.py", line 245, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.WebDriverException: Message: unknown error: cannot connect to chrome at 127.0.0.1:61858
+from session not created: This version of ChromeDriver only supports Chrome version 112
+Current browser version is 126.0.6478.120
+Stacktrace:
+0   chromedriver                        0x00000001012d5ae8 chromedriver + 4958952
+1   chromedriver                        0x00000001012cd7b3 chromedriver + 4925363
+2   chromedriver                        0x0000000100e8f1d6 chromedriver + 475606
+3   chromedriver                        0x0000000100ebfef0 chromedriver + 675568
+4   chromedriver                        0x0000000100eb6928 chromedriver + 637224
+5   chromedriver                        0x0000000100f026e9 chromedriver + 947945
+6   chromedriver                        0x0000000100f01a7f chromedriver + 944767
+7   chromedriver                        0x0000000100ef89e3 chromedriver + 907747
+8   chromedriver                        0x0000000100ec2aef chromedriver + 686831
+9   chromedriver                        0x0000000100ec400e chromedriver + 692238
+10  chromedriver                        0x00000001012919ad chromedriver + 4680109
+11  chromedriver                        0x0000000101296c12 chromedriver + 4701202
+12  chromedriver                        0x000000010129d79f chromedriver + 4728735
+13  chromedriver                        0x0000000101297b7a chromedriver + 4705146
+14  chromedriver                        0x000000010126a27e chromedriver + 4518526
+15  chromedriver                        0x00000001012b7908 chromedriver + 4835592
+16  chromedriver                        0x00000001012b7a87 chromedriver + 4835975
+17  chromedriver                        0x00000001012c700f chromedriver + 4898831
+18  libsystem_pthread.dylib             0x00007ff8125e018b _pthread_start + 99
+19  libsystem_pthread.dylib             0x00007ff8125dbae3 thread_start + 15
+
+2024-07-28 19:19:09,193 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:62784/devtools/browser/9f6491a2-5284-4641-b181-48f1d0953538', 'http': '127.0.0.1:62784', 'coreVersion': '112', 'driver': '/Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver', 'seq': 61, 'name': '', 'remark': '123', 'pid': 9465}}
+2024-07-28 19:19:09,193 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:37 - INFO: 127.0.0.1:62784
+2024-07-28 19:19:09,193 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:41 - INFO: /Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver
+2024-07-28 19:19:09,193 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:42 - INFO: 127.0.0.1:62784
+2024-07-28 19:20:16,841 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:62784/devtools/browser/9f6491a2-5284-4641-b181-48f1d0953538', 'http': '127.0.0.1:62784', 'coreVersion': '112', 'driver': '/Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver', 'seq': 61, 'name': '', 'remark': '123', 'pid': 9465}}
+2024-07-28 19:20:16,842 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:37 - INFO: 127.0.0.1:62784
+2024-07-28 19:20:16,842 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:41 - INFO: /Users/lizonghuan/Library/Application Support/BitBrowser/chromedriver/112/chromedriver
+2024-07-28 19:20:16,842 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:42 - INFO: 127.0.0.1:62784
+2024-07-28 19:20:17,437 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.baidu.com/
+2024-07-28 19:20:18,150 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.baidu.com/,百度一下，你就知道
+2024-07-28 19:22:13,132 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:28 - INFO: 打开:https://www.baidu.com/
+2024-07-28 19:22:13,548 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/driver_utils.py:30 - INFO: 打开成功:https://www.baidu.com/,百度一下，你就知道
+2024-07-28 19:26:22,072 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:64171/devtools/browser/da0f62fd-60a6-4acd-8588-978e40d955d6', 'http': '127.0.0.1:64171', 'coreVersion': '126', 'driver': '', 'seq': 61, 'name': '', 'remark': '123', 'pid': 10254}}
+2024-07-28 19:26:22,074 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:37 - INFO: 127.0.0.1:64171
+2024-07-28 19:26:22,074 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:39 - ERROR: 打开浏览器窗口失败
+2024-07-28 19:43:23,394 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/bit_api.py:14 - INFO: 打开browser:{'success': True, 'data': {'ws': 'ws://127.0.0.1:52443/devtools/browser/f611ecf2-abaa-43e5-916e-ca0d65a4e055', 'http': '127.0.0.1:52443', 'coreVersion': '126', 'driver': '', 'seq': 61, 'name': '', 'remark': '123', 'pid': 11416}}
+2024-07-28 19:43:23,395 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:37 - INFO: 127.0.0.1:52443
+2024-07-28 19:43:23,395 - /Users/lizonghuan/Documents/xinyu_code/tiktok_publish_video/tiktok-tools/chrome_utils.py:39 - ERROR: 打开浏览器窗口失败
