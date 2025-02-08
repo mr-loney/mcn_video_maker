@@ -6,6 +6,7 @@ import subprocess
 from TemplateMain import MainFrame
 from BatchCollection import BatchCollectionFrame
 from comfiyUI import ImageGenerateFrame
+from vcomfiyUI import VideoGenerateFrame
 import message_dialog
 from ftplib import FTP
 import threading
@@ -408,6 +409,12 @@ class FolderListApp(wx.Frame):
 
     def create_empty_template(self, event):
         """新建空模板"""
+        # 检查是否选择了文件夹
+        folder_path = self.folder_picker.GetPath()
+        if not folder_path:
+            wx.CallAfter(message_dialog.show_custom_message_dialog, self, "请先选择一个有效的文件夹！", "错误")
+            return
+        
         # 弹窗输入模板名
         dlg = wx.TextEntryDialog(self, "请输入模板名：(绑账号:[edenworm]video1)", "新建空模板")
         if dlg.ShowModal() == wx.ID_OK:
@@ -875,13 +882,15 @@ class FolderListApp(wx.Frame):
                 image_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_image_generator(event, sf))
                 audio_button = wx.Button(self.scroll_panel, label="音频处理", size=(60, -1))
                 audio_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_audio_generator(event, sf))
-                button = wx.Button(self.scroll_panel, label="视频提示词", size=(80, -1))
+                video_button = wx.Button(self.scroll_panel, label="视频处理", size=(60, -1))
+                video_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_video_generator(event, sf))
+                button = wx.Button(self.scroll_panel, label="场景设置", size=(60, -1))
                 button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_advanced_settings(event, sf))
                 advanced_button = wx.Button(self.scroll_panel, label="高级设置", size=(60, -1))
                 advanced_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_advanced_settings_panel(event, sf))
-                copy_button = wx.Button(self.scroll_panel, label="复制文件夹", size=(80, -1))
+                copy_button = wx.Button(self.scroll_panel, label="复制", size=(40, -1))
                 copy_button.Bind(wx.EVT_BUTTON,lambda evt, sf=subfolder: self.on_copy_folder_click(evt, sf))
-                open_button = wx.Button(self.scroll_panel, label="打开文件夹", size=(80, -1))
+                open_button = wx.Button(self.scroll_panel, label="打开", size=(40, -1))
                 open_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.open_folder(event, sf))
 
                 # 左侧的文件夹名称
@@ -892,6 +901,7 @@ class FolderListApp(wx.Frame):
                 hbox.Add(tp_button, flag=wx.ALL, border=5)
                 hbox.Add(image_button, flag=wx.ALL, border=5)
                 hbox.Add(audio_button, flag=wx.ALL, border=5)
+                hbox.Add(video_button, flag=wx.ALL, border=5)
                 hbox.Add(button, flag=wx.ALL, border=5)
                 hbox.Add(advanced_button, flag=wx.ALL, border=5)
                 hbox.Add(copy_button, flag=wx.ALL, border=5)
@@ -963,6 +973,12 @@ class FolderListApp(wx.Frame):
         """弹出图像生成窗口"""
         folder_path = os.path.join(self.folder_picker.GetPath(), subfolder)
         frame = ImageGenerateFrame(self, folder_path)
+        frame.Show()
+    
+    def show_video_generator(self, event, subfolder):
+        """弹出视频生成窗口"""
+        folder_path = os.path.join(self.folder_picker.GetPath(), subfolder)
+        frame = VideoGenerateFrame(self, folder_path)
         frame.Show()
 
     def on_checkbox_click(self, event, subfolder):
