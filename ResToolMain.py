@@ -235,7 +235,7 @@ class MyFileDropTarget(wx.FileDropTarget):
 class FolderListApp(wx.Frame):
     """主应用窗口"""
     def __init__(self):
-        super().__init__(None, title="AI_MCN伴侣 v1.0", size=(1300, 800))
+        super().__init__(None, title="🌈 小卤蛋 v1.1", size=(1300, 800))
 
         # 添加定时器
         self.timer = wx.Timer(self)
@@ -885,7 +885,7 @@ class FolderListApp(wx.Frame):
                 audio_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_audio_generator(event, sf))
                 video_button = wx.Button(self.scroll_panel, label="视频处理", size=(60, -1))
                 video_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_video_generator(event, sf))
-                hm_button = wx.Button(self.scroll_panel, label="数字人处理", size=(80, -1))
+                hm_button = wx.Button(self.scroll_panel, label="口播处理", size=(60, -1))
                 hm_button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_hm_generator(event, sf))
                 button = wx.Button(self.scroll_panel, label="场景设置", size=(60, -1))
                 button.Bind(wx.EVT_BUTTON, lambda event, sf=subfolder: self.show_advanced_settings(event, sf))
