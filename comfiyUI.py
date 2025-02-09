@@ -13,6 +13,8 @@ from maskEditor import MaskEditorFrame
 from ryry import server_func
 import threading
 import cv2
+import subprocess
+import sys
 
 class BusyDialog(wx.Dialog):
     def __init__(self, parent, message="请稍后..."):
@@ -470,7 +472,11 @@ class TaskPanel(wx.Panel):
 
         # 1) workflow choice
         hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add(wx.StaticText(self, label="Workflow:"), 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5)
+        label = wx.StaticText(self, label="Workflow [Open]:")
+        hbox.Add(label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5)
+
+        # 绑定点击事件
+        label.Bind(wx.EVT_LEFT_UP, self.on_title_label_click)
 
         self.workflow_choice = wx.Choice(self, choices=self.workflow_files)
         if self.workflow_files:
@@ -499,6 +505,27 @@ class TaskPanel(wx.Panel):
         # 如果 workflow_files 非空，默认载入第一个
         if self.workflow_files:
             self.load_workflow(self.workflow_files[0])
+
+    def on_title_label_click(self, event):
+        """
+        打开 workflow 文件夹
+        """
+        # 获取当前文件夹路径
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        workflow_dir = os.path.join(base_dir, "workflows")
+
+        if not os.path.exists(workflow_dir):
+            wx.MessageBox(f"找不到 workflows 文件夹: {workflow_dir}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        # 根据操作系统选择不同的方式打开文件夹
+        if os.name == 'nt':  # Windows
+            os.startfile(workflow_dir)
+        elif os.name == 'posix':  # macOS 或 Linux
+            if 'darwin' in sys.platform:
+                subprocess.run(['open', workflow_dir])  # macOS
+            else:
+                subprocess.run(['xdg-open', workflow_dir])  # Linux
 
     def select_workflow(self, workflow_name):
         """
@@ -844,8 +871,11 @@ class TaskPanel(wx.Panel):
                 # 如果包含 lora_name，就在这行里先加下拉框
                 if "lora_name" in inputs:
                     default_val = inputs["lora_name"]
-                    label_lora = wx.StaticText(self, label=f"{node_id} {title} (lora_name):")
+                    label_lora = wx.StaticText(self, label=f"{node_id} {title} (lora_name) [Open]:")
                     row_sizer.Add(label_lora, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+                    # 绑定点击事件
+                    label_lora.Bind(wx.EVT_LEFT_UP, self.on_label_click)
 
                     # 创建下拉框
                     choices = field_choices_map["lora_name"]  
@@ -859,6 +889,13 @@ class TaskPanel(wx.Panel):
 
                     row_sizer.Add(choice_ctrl, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
                     self.text_controls.setdefault(node_id, {})["lora_name"] = choice_ctrl
+
+                    # 添加上传按钮
+                    upload_button = wx.Button(self, label="上传模型")
+                    row_sizer.Add(upload_button, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+                    # 绑定上传按钮事件
+                    upload_button.Bind(wx.EVT_BUTTON, lambda event, nid=node_id, lora_ctrl=choice_ctrl: self.on_upload_lora(event, nid, lora_ctrl))
 
                 # 如果包含 strength_model，就在同一行里继续加
                 if "strength_model" in inputs:
@@ -944,6 +981,111 @@ class TaskPanel(wx.Panel):
         if isinstance(parent_scrolled, scrolled.ScrolledPanel):
             parent_scrolled.SetupScrolling(scroll_x=False, scroll_y=True)
 
+    def on_label_click(self, event):
+        """
+        打开 loras 文件夹
+        """
+        # 获取 loras 文件夹路径
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        loras_dir = os.path.join(base_dir, "loras")
+
+        if not os.path.exists(loras_dir):
+            wx.MessageBox(f"找不到 loras 文件夹: {loras_dir}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        # 根据操作系统选择不同的方式打开文件夹
+        if os.name == 'nt':  # Windows
+            os.startfile(loras_dir)
+        elif os.name == 'posix':  # macOS 或 Linux
+            if 'darwin' in sys.platform:
+                subprocess.run(['open', loras_dir])  # macOS
+
+    def on_upload_lora(self, event, node_id, lora_ctrl):
+        """
+        点击“上传模型”按钮 -> 异步线程执行上传
+        """
+        lora_name = lora_ctrl.GetStringSelection()
+        if not lora_name:
+            wx.MessageBox("请选择模型文件", "错误", wx.OK | wx.ICON_ERROR)
+            return
+        
+        # 获取触发该事件的按钮对象
+        upload_button = event.GetEventObject()
+
+        # 将按钮文案改为“上传中...”，并禁用按钮
+        upload_button.SetLabel("上传中...")
+        upload_button.Disable()
+
+        # 准备好上传所需信息
+        lora_file_path = os.path.join(os.path.dirname(self.workflow_dir), "loras", lora_name)
+        if not os.path.isfile(lora_file_path):
+            wx.MessageBox(f"模型文件 {lora_name} 不存在！", "错误", wx.OK | wx.ICON_ERROR)
+            # 恢复按钮状态
+            upload_button.SetLabel("上传模型")
+            upload_button.Enable()
+            return
+        
+        ftp_host = "183.6.90.205"
+        ftp_port = 2221
+        ftp_user = "mcn"
+        ftp_pass = "meco@2024+"
+        ftp_dir = "/mnt/NAS/mcn/loras/"
+        ftp_path = ftp_dir + lora_name
+
+        # 启动子线程执行上传操作
+        def do_upload():
+            try:
+                with ftplib.FTP() as ftp:
+                    ftp.connect(ftp_host, ftp_port, timeout=30)
+                    ftp.login(ftp_user, ftp_pass)
+                    
+                    self.ftp_makedirs(ftp, ftp_dir)  # 确保文件夹存在
+                    ftp.cwd(ftp_dir)
+
+                    with open(lora_file_path, "rb") as f:
+                        ftp.storbinary(f"STOR {lora_name}", f)
+
+                # 成功后回到主线程显示提示
+                wx.CallAfter(self.upload_done_callback, upload_button, lora_name, success=True, error=None)
+            except Exception as e:
+                # 失败后回到主线程显示提示
+                wx.CallAfter(self.upload_done_callback, upload_button, lora_name, success=False, error=e)
+
+        t = threading.Thread(target=do_upload)
+        t.start()
+    
+    def upload_done_callback(self, upload_button, lora_name, success, error):
+        """
+        在主线程中恢复按钮状态，并提示上传结果
+        """
+        # 恢复按钮文案和可用状态
+        upload_button.SetLabel("上传模型")
+        upload_button.Enable()
+
+        if success:
+            wx.MessageBox(f"✅ 模型 {lora_name} 上传成功！", "上传成功", wx.OK | wx.ICON_INFORMATION)
+        else:
+            wx.MessageBox(f"上传模型失败: {error}", "错误", wx.OK | wx.ICON_ERROR)
+
+    def ftp_makedirs(self, ftp, remote_dir):
+        """
+        递归创建 FTP 目录
+        remote_dir 形如: /mnt/NAS/mcn/reslib/20230614_xxxx
+        """
+        if not remote_dir.startswith("/"):
+            remote_dir = "/" + remote_dir
+        parts = remote_dir.split("/")
+        path = ""
+        for p in parts:
+            if not p:
+                continue
+            path += f"/{p}"
+            try:
+                ftp.mkd(path)
+            except Exception:
+                # 目录已存在
+                pass
+    
     def on_edit_mask(self, event, node_id):
         """
         打开编辑遮罩窗口
