@@ -1218,9 +1218,20 @@ class TaskPanel(wx.Panel):
         flow_inputs = {}
 
         if self.workflow_data:
+            # 先处理 text_controls 里存储的文本/下拉框
             for node_id, fields_dict in self.text_controls.items():
                 flow_inputs[node_id] = {}
-                ...
+                for field_name, ctrl in fields_dict.items():
+                    if isinstance(ctrl, wx.Choice):
+                        flow_inputs[node_id][field_name] = ctrl.GetStringSelection()
+                    else:
+                        flow_inputs[node_id][field_name] = ctrl.GetValue()
+                    
+                    # 如果有特殊逻辑，比如 lora_name -> lora_url，可以在这里加
+                    if field_name == "lora_name":
+                        ftp_loras_dir = "ftp://183.6.90.205:2221/mnt/NAS/mcn/loras/"
+                        flow_inputs[node_id]["lora_url"] = ftp_loras_dir + flow_inputs[node_id][field_name]
+            
             # ---------------------------
             # 处理 upload_paths => {"image": local_path}
             for node_id in self.preview_bitmaps.keys():
