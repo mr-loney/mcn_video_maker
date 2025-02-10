@@ -66,7 +66,8 @@ class ImageGenerateFrame(wx.Frame):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         self.workflows_dir = os.path.join(base_dir, "workflows")
         self.workflow_files = [f for f in os.listdir(self.workflows_dir) if f.endswith(".json")]
-
+        self.workflow_files.sort(key=lambda f: '文生图' not in f)  # "generate_image" 文件会排在前面
+        
         # 3) 主面板 & 滚动区
         panel = wx.Panel(self)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -914,7 +915,7 @@ class TaskPanel(wx.Panel):
                 blocks_lora.append(row_sizer)
 
             # 先把 seed/steps/cfg/denoise 合并处理：
-            fields_for_one_line = ["seed", "steps", "cfg", "denoise"]
+            fields_for_one_line = ["seed", "steps", "cfg", "denoise", "downsampling_factor", "mode", "weight"]
             found_any = False
             row_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -944,6 +945,8 @@ class TaskPanel(wx.Panel):
                     
                     if field_name == "seed":
                         text_ctrl = wx.TextCtrl(self, value=str(default_val), size=(200, -1))
+                    elif field_name == "mode":
+                        text_ctrl = wx.TextCtrl(self, value=str(default_val), size=(150, -1))
                     else:
                         text_ctrl = wx.TextCtrl(self, value=str(default_val), size=(60, -1))
                     row_sizer.Add(text_ctrl, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)

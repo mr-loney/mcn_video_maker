@@ -203,7 +203,13 @@ class GenerateListFrame(wx.Frame):
             concurrent.futures.wait(download_tasks)
 
             # 下载完后删除 req_xxxx.json
-            os.remove(req_path)
+            # os.remove(req_path)
+
+            # 下载完后重命名 req_xxxx.json => req_xxxx_ok.json
+            base, ext = os.path.splitext(req_path)     # base="/.../req_xxxx", ext=".json"
+            ok_path = base + "_ok" + ext               # => "/.../req_xxxx_ok.json"
+            os.rename(req_path, ok_path)
+            print(f"执行完成, 已将 {req_path} 重命名为 {ok_path}.")
 
         except Exception as e:
             print(f"download_and_remove_req 出错: {req_path}, {e}")
