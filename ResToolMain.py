@@ -282,6 +282,7 @@ class FolderListApp(wx.Frame):
         submit_button = wx.Button(panel, label="提交模版")
         download_bak_button = wx.Button(panel, label="仅拉取原始资源")  # 新增拉取资源按钮
         download_button = wx.Button(panel, label="拉取全部资源")  # 新增拉取资源按钮
+        export_button = wx.Button(panel, label="导出视频")
 
         self.is_listening = False
         
@@ -293,6 +294,7 @@ class FolderListApp(wx.Frame):
         button_sizer.Add(submit_button, flag=wx.CENTER, border=10)
         button_sizer.Add(download_bak_button, flag=wx.LEFT, border=10)
         button_sizer.Add(download_button, flag=wx.LEFT, border=10)
+        button_sizer.Add(export_button, flag=wx.LEFT, border=10)
 
         # 主布局
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -311,6 +313,7 @@ class FolderListApp(wx.Frame):
         submit_button.Bind(wx.EVT_BUTTON, self.on_submit)
         download_bak_button.Bind(wx.EVT_BUTTON, self.download_resources_bak)  # 绑定拉取资源事件
         download_button.Bind(wx.EVT_BUTTON, self.download_resources_nol)  # 绑定拉取资源事件
+        export_button.Bind(wx.EVT_BUTTON, self.export_select_resources)  # 绑定拉取资源事件
         self.Bind(wx.EVT_CLOSE, self.on_close_app)
 
         # 设置拖放功能
@@ -489,6 +492,45 @@ class FolderListApp(wx.Frame):
         self.only_bak = False
         self.download_resources(event)
     
+    def export_select_resources(self, event):
+        import ExportVideoWithRyry
+        folder_path = self.folder_picker.GetPath()
+        all_cnt = 0
+        success_cnt = 0
+        error_msg = ""
+        for subfolder, data in self.folder_data.items():
+            if data["checkbox"].GetValue() == True:
+                #export
+                full_path = os.path.join(folder_path, subfolder)
+                config_path = os.path.join(full_path, "config.json")
+                if not os.path.exists(config_path):
+                    continue
+
+                with open(config_path, 'r') as config_file:
+                    config = json.load(config_file)
+                ftp_folder_name = config.get("ftp_folder_name", "")
+                social_account = config.get("social_account", "")
+                if not ftp_folder_name or not social_account:
+                    continue
+                base_ftp_path = "ftp://183.6.90.205:2221/mnt/NAS/mcn/aigclib/"+ftp_folder_name+"/{userid}"
+                #替换config中的ftp路径为full_path路径
+                config_str = json.dumps(config)
+                config_str = config_str.replace(base_ftp_path, full_path)
+                config = json.loads(config_str)
+                
+                output_dir = os.path.join(full_path, "output")
+                try:
+                    all_cnt+=1
+                    cnt = ExportVideoWithRyry.export(config, output_dir)
+                    success_cnt += 1
+                except:
+                    error_msg += f"\n{subfolder}"
+                    pass
+        if success_cnt == all_cnt:
+            wx.CallAfter(message_dialog.show_custom_message_dialog, self, f"全部成功 ✅", "导出结束")
+        else:
+            wx.CallAfter(message_dialog.show_custom_message_dialog, self, f"成功 {success_cnt}/{all_cnt} 个，失败模版是：\n{error_msg}", "导出结束")
+        
     def download_resources(self, event):
         """拉取资源按钮事件"""
         folder_path = self.folder_picker.GetPath()
