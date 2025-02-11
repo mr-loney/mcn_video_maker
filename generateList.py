@@ -6,6 +6,9 @@ import json
 from wx.lib.scrolledpanel import ScrolledPanel
 import concurrent.futures
 import ftplib
+import platform
+import subprocess
+import sys
 
 # 假设你有 server_func.AsyncTask("OfficialProbe", {}):
 from ryry import server_func
@@ -107,41 +110,50 @@ class GenerateListFrame(wx.Frame):
                 if f.startswith("res_") and f.endswith(".json"):
                     req_path = os.path.join(reslib_path, f)
                     if os.path.isfile(req_path):
-                        # 读取taskuuid
                         try:
                             with open(req_path, "r", encoding="utf-8") as ff:
                                 obj = json.load(ff)
                             taskuuid = obj.get("taskuuid", "")
-                            # 记录
-                            req_list.append((f, taskuuid, "执行中"))
-                            req_files_map[taskuuid] = req_path
-                        except:
-                            pass
+
+                            if f.endswith("_ok.json"):
+                                # 已完成的文件 => 状态“已完成”
+                                req_list.append((f, taskuuid, "已完成", req_path))
+                                # 不放进 req_files_map，所以后续不会 multiCheck 也不会下载
+                            else:
+                                # 普通 .json => 状态初始“执行中”
+                                req_list.append((f, taskuuid, "执行中", req_path))
+                                # 加入 req_files_map，用于 multiCheck 以及下载
+                                if taskuuid:
+                                    req_files_map[taskuuid] = req_path
+                        except Exception as e:
+                            print(f"读取 {req_path} 出错: {e}")
 
             if req_list:
                 data_dict[sf] = req_list
 
         # 2) 拿到所有taskuuid
-        all_uuids = []
-        for sf, arr in data_dict.items():
-            for (req_file, t_uuid, st) in arr:
-                if t_uuid:
-                    all_uuids.append(t_uuid)
+        # all_uuids = []
+        # for sf, arr in data_dict.items():
+        #     for (req_file, t_uuid, st) in arr:
+        #         if t_uuid:
+        #             all_uuids.append(t_uuid)
+        all_uuids = list(req_files_map.keys())
 
         # 3) 调用 multiCheck => 批量获取状态
         if all_uuids:
             api = server_func.AsyncTask("MCNComfyUIFlow", {})
-            # multiCheckResults 形如:
-            # {
-            #   "uuid": { "finish": bool, "success": bool, "data": {}, "progress": 100 },
-            #   ...
-            # }
             multiCheckResults = api.multiCheck(all_uuids)
 
             # 更新 data_dict 里 status
             for sf, arr in data_dict.items():
                 new_arr = []
-                for (req_file, t_uuid, st) in arr:
+                for (req_file, t_uuid, st, abs_path) in arr:
+                    # 如果是 _ok.json => 已完成，不变
+                    if req_file.endswith("_ok.json"):
+                        new_arr.append((req_file, t_uuid, st, abs_path))
+                        continue
+                    
+                    # 否则是普通 req_xxxx.json => 根据 multiCheck 更新状态
                     if t_uuid in multiCheckResults:
                         info = multiCheckResults[t_uuid]
                         finish  = info.get("finish", False)
@@ -150,7 +162,7 @@ class GenerateListFrame(wx.Frame):
                             st = "执行中"
                         else:
                             if success:
-                                st = "已完成"
+                                st = "已返回(下载中)"
                                 # 异步下载 => remove req
                                 req_path = req_files_map.get(t_uuid, "")
                                 if req_path:
@@ -162,7 +174,7 @@ class GenerateListFrame(wx.Frame):
                                         )
                             else:
                                 st = "已错误"
-                    new_arr.append((req_file, t_uuid, st))
+                    new_arr.append((req_file, t_uuid, st, abs_path))
                 data_dict[sf] = new_arr
 
         return data_dict
@@ -262,8 +274,9 @@ class GenerateListFrame(wx.Frame):
             # 确保 remote_path 是个目录(或可进入)
             # 这里递归下载 entire remote_path => local_dir
             self.download_entire_ftp_directory(ftp, remote_path, local_dir)
-
+            
             ftp.quit()
+            
             print(f"下载完成: {ftp_url} => {local_dir}")
         except Exception as e:
             print(f"下载失败: {ftp_url}, 错误: {e}")
@@ -334,30 +347,92 @@ class GenerateListFrame(wx.Frame):
 
             # 用一个 panel + boxsizer 做灰色背景
             folder_panel = wx.Panel(self.scrolled_panel)
-            folder_panel.SetBackgroundColour(wx.Colour(24, 24, 24))  # 深灰
+            if self.is_dark_mode():
+                folder_panel.SetBackgroundColour(wx.Colour(24, 24, 24))  # 深灰
+            else:
+                folder_panel.SetBackgroundColour(wx.Colour(180, 180, 180))  # 深灰
             folder_sizer = wx.BoxSizer(wx.VERTICAL)
             folder_panel.SetSizer(folder_sizer)
 
+            # 水平布局放置 folder_label 和 clear_label
+            top_sizer = wx.BoxSizer(wx.HORIZONTAL)  # 水平布局
+
             # 文件夹标题
-            folder_label = wx.StaticText(folder_panel, label=f"模板文件夹: {sf}")
+            folder_label = wx.StaticText(folder_panel, label=f"模板文件夹: {sf} [Open]")
             folder_label.SetForegroundColour(wx.Colour("gray"))
+            if self.is_dark_mode():
+                folder_label.SetForegroundColour(wx.Colour("gray"))
+            else:
+                folder_label.SetForegroundColour(wx.Colour("black"))
             font = folder_label.GetFont()
             font.SetWeight(wx.FONTWEIGHT_BOLD)
             folder_label.SetFont(font)
-            folder_sizer.Add(folder_label, 0, wx.ALL, 5)
+            
+            top_sizer.Add(folder_label, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
             folder_label.Bind(
                 wx.EVT_LEFT_DOWN,
                 lambda evt, path=reslib_path: self.on_open_reslib(evt, path)
             )
 
+            # 添加[清空任务]标签
+            clear_label = wx.StaticText(folder_panel, label="[清空任务]")
+            if self.is_dark_mode():
+                clear_label.SetForegroundColour(wx.Colour("gray"))
+            else:
+                clear_label.SetForegroundColour(wx.Colour("#444444"))
+            font = folder_label.GetFont()
+            font.SetWeight(wx.FONTWEIGHT_BOLD)
+            clear_label.SetFont(font)
+            clear_label.Bind(
+                wx.EVT_LEFT_DOWN,
+                lambda evt, folder=sf: self.clear_folder_tasks(evt, folder)
+            )
+
+            # 将 [清空任务] 放置到右边
+            right_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            right_sizer.AddStretchSpacer(1)  # 添加一个弹性间隔，使清空任务靠右
+            right_sizer.Add(clear_label, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+            
+            # 添加 right_sizer 到 top_sizer
+            top_sizer.Add(right_sizer, 1, wx.EXPAND | wx.ALL, 0)
+
+            # 将水平布局添加到垂直布局
+            folder_sizer.Add(top_sizer, 0, wx.EXPAND | wx.ALL, 0)
+
             # 遍历 (req_file, t_uuid, st)
-            for i, (req_file, t_uuid, st) in enumerate(arr):
+            for i, (req_file, t_uuid, st, abs_path) in enumerate(arr):
                 row_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
+                # 只显示 t_uuid 后6位
+                # short_uuid = t_uuid[-6:] if len(t_uuid) > 6 else t_uuid
+                # 先从 JSON 中尝试获取 cmd_title
+                cmd_title = None
+                if os.path.isfile(abs_path):
+                    try:
+                        with open(abs_path, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        cmd_title = data.get("cmd_title", None)
+                    except Exception as e:
+                        print(f"读取 JSON 出错或无 cmd_title: {e}")
+
+                if cmd_title:
+                    max_length = 30
+                    if len(cmd_title) > max_length:
+                        # 预留 3 个字符给 "..."，
+                        # 因此只保留前 35 个字符 + "..."
+                        cmd_title = cmd_title[:(max_length-3)] + "..."
+
+                # 如果存在 cmd_title，则用它作为显示文本；否则用 t_uuid
+                display_text = cmd_title if cmd_title else t_uuid
+                
                 label_req = wx.StaticText(folder_panel, label=req_file)
-                label_uuid = wx.StaticText(folder_panel, label=t_uuid)
-                label_uuid.SetForegroundColour(wx.Colour("gray"))
+                label_uuid = wx.StaticText(folder_panel, label=display_text)
+
+                if self.is_dark_mode():
+                    label_uuid.SetForegroundColour(wx.Colour("gray"))
+                else:
+                    label_uuid.SetForegroundColour(wx.Colour("#444444"))
 
                 label_st = wx.StaticText(folder_panel, label=st, style=wx.ALIGN_RIGHT)
 
@@ -366,11 +441,42 @@ class GenerateListFrame(wx.Frame):
                     label_st.SetForegroundColour(wx.Colour("yellow"))
                 elif st == "已错误":
                     label_st.SetForegroundColour(wx.Colour("red"))
+                elif st == "已返回(下载中)":
+                    label_st.SetForegroundColour(wx.Colour("yellow"))
                 elif st == "已完成":
                     label_st.SetForegroundColour(wx.Colour("green"))
 
                 row_sizer.Add(label_req,  0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
                 row_sizer.Add(label_uuid, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+                # 当状态为“已完成”或“已错误”时，增加“删除”按钮
+                if st in ("已完成", "已错误"):
+                    delete_label = wx.StaticText(folder_panel, label="[删除]")
+                    if self.is_dark_mode():
+                        delete_label.SetForegroundColour(wx.Colour("gray"))
+                    else:
+                        delete_label.SetForegroundColour(wx.Colour("#444444"))
+                    # 点击后执行删除方法
+                    delete_label.Bind(
+                        wx.EVT_LEFT_DOWN,
+                        lambda evt, p=abs_path, folder=sf: self.on_delete_req(evt, p, folder)
+                    )
+                    row_sizer.Add(delete_label, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
+                # 当状态为“已完成”时，额外增加“打开”按钮
+                if st == "已完成":
+                    open_label = wx.StaticText(folder_panel, label="[打开]")
+                    if self.is_dark_mode():
+                        open_label.SetForegroundColour(wx.Colour("gray"))
+                    else:
+                        open_label.SetForegroundColour(wx.Colour("#444444"))
+                    # 假设: req_file="res_123.json" => base_name="res_123"
+                    open_label.Bind(
+                        wx.EVT_LEFT_DOWN,
+                        lambda evt, json_path=abs_path: self.on_open_local_path(evt, json_path)
+                    )
+                    row_sizer.Add(open_label, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
+
                 row_sizer.AddStretchSpacer(1)
                 row_sizer.Add(label_st,   0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
@@ -387,6 +493,122 @@ class GenerateListFrame(wx.Frame):
         # 3) 重新布局
         self.scrolled_panel.Layout()
         self.scrolled_panel.SetupScrolling(scroll_x=False, scroll_y=True)
+
+    def clear_folder_tasks(self, event, folder_name):
+        """
+        清空文件夹下所有 res_xxxx.json 文件
+        """
+        folder_path = os.path.join(self.root_folder, folder_name, "reslib")
+        if not os.path.isdir(folder_path):
+            wx.MessageBox(f"文件夹不存在: {folder_path}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        try:
+            for file_name in os.listdir(folder_path):
+                if file_name.startswith("res_") and file_name.endswith(".json"):
+                    file_path = os.path.join(folder_path, file_name)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                        print(f"已删除: {file_path}")
+            # wx.MessageBox(f"已清空文件夹 {folder_name} 下的所有任务。", "清空成功", wx.OK | wx.ICON_INFORMATION)
+        except Exception as e:
+            wx.MessageBox(f"清空失败: {e}", "错误", wx.OK | wx.ICON_ERROR)
+
+        # 清空文件后刷新 UI
+        new_info = self.scan_folders_and_parse()
+        self.update_ui(new_info)
+    
+    def on_delete_req(self, event, req_path, folder_name):
+        """
+        删除 req_path 文件，并刷新列表
+        """
+        if not os.path.isfile(req_path):
+            wx.MessageBox(f"文件不存在: {req_path}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+        
+        try:
+            os.remove(req_path)
+            # wx.MessageBox(f"已删除 {req_path}", "删除成功", wx.OK | wx.ICON_INFORMATION)
+        except Exception as e:
+            wx.MessageBox(f"删除失败: {e}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        # 删除后强制刷新
+        new_info = self.scan_folders_and_parse()
+        self.update_ui(new_info)
+    
+    def on_open_local_path(self, event, json_path):
+        """
+        打开 flows[0]["local_path"] 字段指定的目录(可能不完整)，
+        实际需要搜索“带后缀”的文件夹。
+        """
+        if not os.path.isfile(json_path):
+            wx.MessageBox(f"无法找到文件: {json_path}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception as e:
+            wx.MessageBox(f"读取 JSON 出错: {e}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        flows = data.get("flows", [])
+        if not flows:
+            wx.MessageBox("JSON 中没有 flows，无法定位 local_path", "提示", wx.OK | wx.ICON_INFORMATION)
+            return
+
+        # 这里只演示获取第一个 flow 的 local_path
+        flow = flows[0]
+        local_path = flow.get("local_path", "")
+        if not local_path:
+            wx.MessageBox("未找到 local_path 字段", "提示", wx.OK | wx.ICON_INFORMATION)
+            return
+
+        # local_path 形如：/Users/joyy/Desktop/testlib/fddgfdgf_mqRsK/reslib/res_VGQM01
+        # 但实际要打开：res_VGQM01_XXXX
+
+        parent_dir = os.path.dirname(local_path)      # => /Users/joyy/Desktop/testlib/fddgfdgf_mqRsK/reslib
+        base_name = os.path.basename(local_path)      # => res_VGQM01
+
+        if not os.path.isdir(parent_dir):
+            wx.MessageBox(f"父目录不存在: {parent_dir}", "错误", wx.OK | wx.ICON_ERROR)
+            return
+
+        # 在 parent_dir 下搜索以 base_name 开头的所有文件夹
+        candidates = []
+        for d in os.listdir(parent_dir):
+            full_path = os.path.join(parent_dir, d)
+            if os.path.isdir(full_path) and d.startswith(base_name):
+                candidates.append(full_path)
+
+        if not candidates:
+            wx.MessageBox(
+                f"在 {parent_dir} 中未找到以 '{base_name}' 开头的文件夹！",
+                "提示",
+                wx.OK | wx.ICON_INFORMATION
+            )
+            return
+
+        # 如果只找到一个 => 打开它
+        if len(candidates) == 1:
+            target_folder = candidates[0]
+        else:
+            # 如果找到多个，按需决定：这里演示“打开最新修改的一个”
+            target_folder = max(candidates, key=os.path.getmtime)
+
+        self.open_folder_in_explorer(target_folder)
+
+    def open_folder_in_explorer(self, folder_path):
+        import platform
+        import subprocess
+        pf = platform.system()
+        if pf == "Windows":
+            os.startfile(folder_path)
+        elif pf == "Darwin":
+            subprocess.run(["open", folder_path])
+        else:
+            subprocess.run(["xdg-open", folder_path])
 
     def on_open_reslib(self, event, folder_path):
         """
@@ -405,3 +627,61 @@ class GenerateListFrame(wx.Frame):
             subprocess.run(["open", folder_path])
         else:
             subprocess.run(["xdg-open", folder_path])
+
+    def is_dark_mode(self):
+        """
+        检测当前系统(Windows / macOS)是否使用深色模式。
+        返回 True 表示深色模式，False 表示浅色模式。
+        对其它系统默认返回 False。
+        """
+        os_name = platform.system()
+        
+        if os_name == "Darwin":
+            # macOS 检测
+            return self.is_dark_mode_macos()
+        elif os_name == "Windows":
+            # Windows 检测
+            return self.is_dark_mode_windows()
+        else:
+            # 其它系统暂不处理，默认认为浅色
+            return False
+
+    def is_dark_mode_macos(self):
+        """
+        macOS 下，通过 `defaults read -g AppleInterfaceStyle` 判断
+        如果返回 `Dark` 则是深色模式，否则浅色。
+        """
+        try:
+            out = subprocess.check_output(
+                ["defaults", "read", "-g", "AppleInterfaceStyle"],
+                stderr=subprocess.STDOUT
+            ).strip()
+            return (out == b"Dark")
+        except subprocess.CalledProcessError:
+            # 没有此 key 或调用出错 => 浅色模式
+            return False
+
+    def is_dark_mode_windows(self):
+        """
+        Windows 下通过注册表:
+        HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+        - AppsUseLightTheme = 0 => 深色, 1 => 浅色
+        或
+        - SystemUsesLightTheme = 0 => 深色, 1 => 浅色
+        根据需要可检测“AppsUseLightTheme”或“SystemUsesLightTheme”。
+        若无法读取则默认浅色。
+        """
+        try:
+            import winreg  # Python 自带 Windows-only
+            
+            reg_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+            # 我们以 AppsUseLightTheme 为例；SystemUsesLightTheme 同理
+            value_name = "AppsUseLightTheme"
+            
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path) as key:
+                value, regtype = winreg.QueryValueEx(key, value_name)
+                # value = 1 表示浅色，0 表示深色
+                return (value == 0)  # 0 => 深色 => return True
+        except:
+            # 如果读注册表出错，就返回 False（默认浅色）
+            return False

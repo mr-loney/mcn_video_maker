@@ -36,7 +36,7 @@ ffplay_path = get_ffplay_path()
 
 class TTSGenerateFrame(wx.Frame):
     def __init__(self, parent, folder_path):
-        super().__init__(parent, title="音频生成", size=(920, 800))
+        super().__init__(parent, title="音频生成", size=(930, 800))
         self.parent = parent
         self.folder_path = folder_path  # 用于保存 req_XXX.json 的目录
 
@@ -717,6 +717,7 @@ class TTSGenerateFrame(wx.Frame):
                 api=server_func.AsyncTask("MCNTTSGenInOne",req_data)
             taskuuid=api.call()
             req_data["taskuuid"]=taskuuid
+            req_data["cmd_title"]=tts_api
 
             self.save_req_json(req_data)
             wx.CallAfter(self.on_submit_done,True,"")

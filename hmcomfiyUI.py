@@ -209,6 +209,8 @@ class HMGenerateFrame(wx.Frame):
         try:
             # 1) 收集多任务 flows
             flows = []
+            cmd_titles = []  # 用于保存所有任务名
+            
             for panel in self.task_panels:
                 data = panel.get_task_data()
                 flows.append(data)
@@ -218,10 +220,22 @@ class HMGenerateFrame(wx.Frame):
                 "flows": flows
             }
 
+            # 提取每个 flow_api 的任务名，并加入 cmd_titles 列表
+            for flow in flows:
+                flow_api = flow.get("flow_api", "")
+                if flow_api:
+                    # 提取 "xxxx/aaaa/test/任务名.json" 中的 "任务名"
+                    task_name = flow_api.split('/')[-1].split('.')[0]
+                    cmd_titles.append(task_name)
+
+            # 拼接所有任务名，使用 "-" 连接
+            cmd_title = "-".join(cmd_titles)
+
             # 2) FTP并发上传 + 替换
             updated_submission = self.upload_all_to_ftp(single_submission)
             # === 在这里调用“扁平化”处理 ===
             self.flatten_flow_inputs(updated_submission)
+            updated_submission["cmd_title"] = cmd_title
 
             for _ in range(repeat_count):
                 # 3) 调 server_func.AsyncTask

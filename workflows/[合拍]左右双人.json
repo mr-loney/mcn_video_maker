@@ -1,0 +1,362 @@
+{
+  "1": {
+    "inputs": {
+      "unet_name": "flux1-dev-fp8.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "PixelWave-lora-r128-v1.safetensors",
+      "strength_model": 1,
+      "model": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoRA加载器（仅模型）"
+    }
+  },
+  "3": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp8_e4m3fn.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "双CLIP加载器"
+    }
+  },
+  "4": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "加载VAE"
+    }
+  },
+  "5": {
+    "inputs": {
+      "image": "2.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载左边人脸图像"
+    }
+  },
+  "7": {
+    "inputs": {
+      "image": "9.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载右边人脸图像"
+    }
+  },
+  "11": {
+    "inputs": {
+      "weight": 1,
+      "start_at": 0,
+      "end_at": 1,
+      "model": [
+        "2",
+        0
+      ],
+      "pulid_flux": [
+        "13",
+        0
+      ],
+      "eva_clip": [
+        "14",
+        0
+      ],
+      "face_analysis": [
+        "15",
+        0
+      ],
+      "image": [
+        "5",
+        0
+      ],
+      "attn_mask": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "ApplyPulidFlux",
+    "_meta": {
+      "title": "Apply PuLID Flux"
+    }
+  },
+  "12": {
+    "inputs": {
+      "weight": 1,
+      "start_at": 0,
+      "end_at": 1,
+      "model": [
+        "11",
+        0
+      ],
+      "pulid_flux": [
+        "13",
+        0
+      ],
+      "eva_clip": [
+        "14",
+        0
+      ],
+      "face_analysis": [
+        "15",
+        0
+      ],
+      "image": [
+        "7",
+        0
+      ],
+      "attn_mask": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "ApplyPulidFlux",
+    "_meta": {
+      "title": "Apply PuLID Flux"
+    }
+  },
+  "13": {
+    "inputs": {
+      "pulid_file": "pulid_flux_v0.9.1.safetensors"
+    },
+    "class_type": "PulidFluxModelLoader",
+    "_meta": {
+      "title": "Load PuLID Flux Model"
+    }
+  },
+  "14": {
+    "inputs": {},
+    "class_type": "PulidFluxEvaClipLoader",
+    "_meta": {
+      "title": "Load Eva Clip (PuLID Flux)"
+    }
+  },
+  "15": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "PulidFluxInsightFaceLoader",
+    "_meta": {
+      "title": "Load InsightFace (PuLID Flux)"
+    }
+  },
+  "16": {
+    "inputs": {
+      "text": "img_03_07_2020_87745-057, 8K HD, realistic photograph, two young women, long_legs, standing close, on tokyo street, at middle-night",
+      "clip": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "正向提示词"
+    }
+  },
+  "17": {
+    "inputs": {
+      "guidance": 3.5,
+      "conditioning": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "Flux引导"
+    }
+  },
+  "18": {
+    "inputs": {
+      "seed": 717945341766204,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "20",
+        0
+      ],
+      "positive": [
+        "17",
+        0
+      ],
+      "negative": [
+        "21",
+        0
+      ],
+      "latent_image": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "19": {
+    "inputs": {
+      "model": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "FluxForwardOverrider",
+    "_meta": {
+      "title": "FluxForwardOverrider"
+    }
+  },
+  "20": {
+    "inputs": {
+      "residual_diff_threshold": 0.12,
+      "model": [
+        "19",
+        0
+      ]
+    },
+    "class_type": "ApplyFirstBlockCachePatch",
+    "_meta": {
+      "title": "ApplyFirstBlockCachePatch"
+    }
+  },
+  "21": {
+    "inputs": {
+      "conditioning": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "条件零化"
+    }
+  },
+  "22": {
+    "inputs": {
+      "width": 1024,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空Latent图像"
+    }
+  },
+  "23": {
+    "inputs": {
+      "samples": [
+        "18",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "24": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "35": {
+    "inputs": {
+      "value": 1,
+      "width": 512,
+      "height": 768
+    },
+    "class_type": "SolidMask",
+    "_meta": {
+      "title": "纯块遮罩"
+    }
+  },
+  "36": {
+    "inputs": {
+      "value": 0,
+      "width": 1024,
+      "height": 768
+    },
+    "class_type": "SolidMask",
+    "_meta": {
+      "title": "纯块遮罩"
+    }
+  },
+  "37": {
+    "inputs": {
+      "x": 0,
+      "y": 0,
+      "operation": "add",
+      "destination": [
+        "36",
+        0
+      ],
+      "source": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "合成遮罩"
+    }
+  },
+  "39": {
+    "inputs": {
+      "mask": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "反转遮罩"
+    }
+  },
+  "40": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  }
+}

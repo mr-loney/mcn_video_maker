@@ -65,8 +65,38 @@ class ImageGenerateFrame(wx.Frame):
         # 2) workflows 文件夹 & 文件列表
         base_dir = os.path.dirname(os.path.abspath(__file__))
         self.workflows_dir = os.path.join(base_dir, "workflows")
-        self.workflow_files = [f for f in os.listdir(self.workflows_dir) if f.endswith(".json")]
-        self.workflow_files.sort(key=lambda f: '文生图' not in f)  # "generate_image" 文件会排在前面
+        # self.workflow_files = [f for f in os.listdir(self.workflows_dir) if f.endswith(".json")]
+        # 1) 定义前缀的优先级
+        prefix_order = [
+            "[生图]",  # 0
+            "[修图]",  # 1
+            "[换脸]",  # 2
+            "[放大]",  # 3
+            "[合拍]",  # 4
+            "[配音]",  # 5
+            "[视频]",  # 6
+        ]
+        def file_sort_key(f):
+            """
+            根据文件名前缀返回一个(优先级, 文件名)元组。
+            前缀优先级越小，排得越前；找不到任何前缀则排到最后。
+            """
+            for i, p in enumerate(prefix_order):
+                if f.startswith(p):
+                    # 找到匹配前缀 => 返回 (i, f)，确保在同级前缀内再按文件名排序
+                    return (i, f)
+            # 如果都没匹配到 => 放在最后 (len(prefix_order)) 并按文件名二次排序
+            return (len(prefix_order), f)
+
+        # 2) 给 workflow_files 做列表推导
+        self.workflow_files = [
+            f for f in os.listdir(self.workflows_dir) 
+            if f.endswith(".json")
+        ]
+
+        # 3) 使用自定义的 sort key
+        self.workflow_files.sort(key=file_sort_key)
+        self.workflow_files.sort(key=lambda f: '[生图]文生图' not in f)  # "generate_image" 文件会排在前面
         
         # 3) 主面板 & 滚动区
         panel = wx.Panel(self)
@@ -210,6 +240,8 @@ class ImageGenerateFrame(wx.Frame):
         try:
             # 1) 收集多任务 flows
             flows = []
+            cmd_titles = []  # 用于保存所有任务名
+
             for panel in self.task_panels:
                 data = panel.get_task_data()
                 flows.append(data)
@@ -219,8 +251,20 @@ class ImageGenerateFrame(wx.Frame):
                 "flows": flows
             }
 
+            # 提取每个 flow_api 的任务名，并加入 cmd_titles 列表
+            for flow in flows:
+                flow_api = flow.get("flow_api", "")
+                if flow_api:
+                    # 提取 "xxxx/aaaa/test/任务名.json" 中的 "任务名"
+                    task_name = flow_api.split('/')[-1].split('.')[0]
+                    cmd_titles.append(task_name)
+
+            # 拼接所有任务名，使用 "-" 连接
+            cmd_title = "-".join(cmd_titles)
+
             # 2) FTP并发上传 + 替换
             updated_submission = self.upload_all_to_ftp(single_submission)
+            updated_submission["cmd_title"] = cmd_title
 
             for _ in range(repeat_count):
                 # 3) 调 server_func.AsyncTask

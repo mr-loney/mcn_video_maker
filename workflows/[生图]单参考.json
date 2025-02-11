@@ -1,0 +1,251 @@
+{
+  "1": {
+    "inputs": {
+      "image": "3.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载参考图像"
+    }
+  },
+  "2": {
+    "inputs": {
+      "downsampling_factor": 3,
+      "downsampling_function": "area",
+      "mode": "center crop (square)",
+      "weight": 1,
+      "autocrop_margin": 0.1,
+      "conditioning": [
+        "6",
+        0
+      ],
+      "style_model": [
+        "4",
+        0
+      ],
+      "clip_vision": [
+        "3",
+        0
+      ],
+      "image": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "ReduxAdvanced",
+    "_meta": {
+      "title": "ReduxAdvanced"
+    }
+  },
+  "3": {
+    "inputs": {
+      "clip_name": "sigclip_vision_patch14_384.safetensors"
+    },
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "加载CLIP视觉"
+    }
+  },
+  "4": {
+    "inputs": {
+      "style_model_name": "FLUX.1-Redux-dev/flux1-redux-dev.safetensors"
+    },
+    "class_type": "StyleModelLoader",
+    "_meta": {
+      "title": "加载风格模型"
+    }
+  },
+  "5": {
+    "inputs": {
+      "text": "img_03_07_2020_87745-057, 8K HD, realistic photograph, 1girl, sitting on grass,",
+      "clip": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "正向提示词"
+    }
+  },
+  "6": {
+    "inputs": {
+      "guidance": 3.5,
+      "conditioning": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "Flux引导"
+    }
+  },
+  "7": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp8_e4m3fn.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "双CLIP加载器"
+    }
+  },
+  "8": {
+    "inputs": {
+      "seed": 108783483185953,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "12",
+        0
+      ],
+      "positive": [
+        "2",
+        0
+      ],
+      "negative": [
+        "9",
+        0
+      ],
+      "latent_image": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "9": {
+    "inputs": {
+      "conditioning": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "条件零化"
+    }
+  },
+  "10": {
+    "inputs": {
+      "width": 768,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空Latent图像"
+    }
+  },
+  "11": {
+    "inputs": {
+      "unet_name": "flux1-dev-fp8.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "12": {
+    "inputs": {
+      "residual_diff_threshold": 0.12,
+      "model": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "ApplyFirstBlockCachePatch",
+    "_meta": {
+      "title": "ApplyFirstBlockCachePatch"
+    }
+  },
+  "13": {
+    "inputs": {
+      "model": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "FluxForwardOverrider",
+    "_meta": {
+      "title": "FluxForwardOverrider"
+    }
+  },
+  "14": {
+    "inputs": {
+      "samples": [
+        "8",
+        0
+      ],
+      "vae": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "15": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "加载VAE"
+    }
+  },
+  "17": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "18": {
+    "inputs": {
+      "lora_name": "PixelWave-lora-r128-v1.safetensors",
+      "strength_model": 1,
+      "model": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoRA加载器（仅模型）"
+    }
+  },
+  "19": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  }
+}
