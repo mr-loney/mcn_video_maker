@@ -5,6 +5,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
+        ('log', 'log'),
         ('cache', 'cache'),
         ('tiktok-tools', 'tiktok-tools'),
         ('chrome_driver', 'chrome_driver'),
@@ -12,6 +13,7 @@ a = Analysis(
         ('models', 'models'),
         ('loras', 'loras'),
         ('workflows', 'workflows'),
+        ('fonts', 'fonts'),
         ('vid_workflows', 'vid_workflows'),
         ('hm_workflows', 'hm_workflows'),
         ('audiolist', 'audiolist'),

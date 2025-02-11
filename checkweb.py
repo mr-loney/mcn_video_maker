@@ -5,6 +5,7 @@ import threading
 import time
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from template_generator import template as genertor_template
 import logging
 import subprocess
 from mutagen.mp4 import MP4
@@ -13,6 +14,14 @@ from pathlib import Path
 import sys
 import yaml
 import platform
+import random
+import shutil
+import utils
+
+# 获取当前脚本的路径
+script_path = Path(__file__).resolve()
+# 获取当前脚本所在的目录
+script_dir = script_path.parent
 
 # 拿到 "tiktok-tools" 绝对路径
 tools_path = os.path.join(os.path.dirname(__file__), "tiktok-tools")
@@ -355,6 +364,8 @@ class CheckWebUpdates:
 
     def download_video(self, sub_link, folder, web_url, latest_video_title):
         """模拟下载视频并保存到指定路径"""
+        start_time_sec = time.time()  # 记录开始时间
+
         try:
             # If we have a non-empty latest_video_title, let's write it back to config.json
             if latest_video_title:
@@ -375,7 +386,15 @@ class CheckWebUpdates:
 
             # 调用 self.res_find_url 获得真实的下载链接
             download_url = self.res_find_url(web_url)
+            end_time_sec = time.time()
+            elapsed_sec = end_time_sec - start_time_sec
+            logger.info(f"本次解析视频地址耗时：{elapsed_sec:.2f} 秒")
+
+            start_time_sec = time.time()
+
             if download_url:
+                self.switch_clash_mode("Global")
+                self.switch_clash_global("🔰 选择节点")
                 logger.info(f"开始从 {download_url} 下载...")
                 output_folder = os.path.join(self.folder_path, folder, "output")
                 os.makedirs(output_folder, exist_ok=True)
@@ -396,16 +415,24 @@ class CheckWebUpdates:
                     # 启动 aria2c 下载
                     subprocess.run(aria2c_command, check=True, cwd=output_folder)
                     logger.info(f"视频下载完成并保存为 {result_file}")
-                
+
                 except subprocess.CalledProcessError as e:
                     logger.error(f"下载过程中发生错误: {e}")
                     return
+                finally:
+                    # 5) 在 finally 中记录结束时间并打印耗时
+                    end_time_sec = time.time()
+                    elapsed_sec = end_time_sec - start_time_sec
+                    logger.info(f"本次下载视频耗时：{elapsed_sec:.2f} 秒")
+                
+                start_time_sec = time.time()
 
                 # 获取视频时长
                 video_duration = self.get_video_duration(result_file)
 
                 # 根据视频时长切割视频
                 if video_duration <= 5 * 60:
+                # if video_duration >= 0:
                     logger.info("视频时长小于5分钟，不进行切割")
 
                     # 先定义一个临时文件名
@@ -413,6 +440,10 @@ class CheckWebUpdates:
 
                     # 在这里先cut_video到临时文件
                     self.cut_video(result_file, temp_file, 0, video_duration, latest_video_title, " ")
+
+                    end_time_sec = time.time()
+                    elapsed_sec = end_time_sec - start_time_sec
+                    logger.info(f"本次视频剪辑耗时：{elapsed_sec:.2f} 秒")
 
                     # 再重命名 temp_1.mp4 => result.mp4
                     final_name = os.path.join(output_folder, "result.mp4")
@@ -431,8 +462,8 @@ class CheckWebUpdates:
                         logger.info("视频时长在5-20分钟之间，切割为3份")
                         num_parts = 3
                     else:
-                        logger.info("视频时长大于20分钟，切割为5份")
-                        num_parts = 5
+                        logger.info("视频时长大于20分钟，切割为3份")
+                        num_parts = 3
 
                     segment_duration = video_duration / num_parts
 
@@ -443,7 +474,6 @@ class CheckWebUpdates:
                         temp_file  = os.path.join(output_folder, f"temp_{i+1}.mp4")
                         final_file = os.path.join(output_folder, f"result_{i+1}.mp4")
 
-                        # 传入 cut_video 时，第三个参数 part_label => "Part {i+1}"
                         part_label = f"Part {i+1}"
                         self.cut_video(
                             input_file=result_file,
@@ -453,14 +483,21 @@ class CheckWebUpdates:
                             video_title=latest_video_title,
                             part_label=part_label
                         )
-
-                        file_pairs.append((temp_file, final_file))
-
-                    # 所有 cut_video 完成后，再统一 rename
-                    for temp_file, final_file in file_pairs:
                         if os.path.exists(final_file):
                             os.remove(final_file)
                         os.rename(temp_file, final_file)
+
+                        # file_pairs.append((temp_file, final_file))
+                    
+                    end_time_sec = time.time()
+                    elapsed_sec = end_time_sec - start_time_sec
+                    logger.info(f"本轮视频剪辑耗时：{elapsed_sec:.2f} 秒")
+
+                    # 所有 cut_video 完成后，再统一 rename
+                    # for temp_file, final_file in file_pairs:
+                    #     if os.path.exists(final_file):
+                    #         os.remove(final_file)
+                    #     os.rename(temp_file, final_file)
 
                     # 删除原始下载文件
                     if os.path.exists(result_file):
@@ -511,13 +548,51 @@ class CheckWebUpdates:
         self.watch_folders = watch_folders
 
     def start_checking(self):
-        """每10秒检查一次"""
+        """
+        启动两个后台线程：
+        1) 每 10 秒执行 check_new_videos()
+        2) 每 10 秒执行 scan_and_process_videos()
+        互不等待互不影响。
+        """
+
+        # 创建线程 1 (后台线程, daemon=True)
+        t_check = threading.Thread(
+            target=self.thread_check_new_videos,
+            daemon=True
+        )
+        # 创建线程 2 (后台线程, daemon=True)
+        t_scan = threading.Thread(
+            target=self.thread_scan_and_process_videos,
+            daemon=True
+        )
+
+        # 启动线程
+        t_check.start()
+        t_scan.start()
+    
+    def thread_check_new_videos(self):
+        """
+        该线程在 while True 内部，每隔 5 秒执行一次 check_new_videos()。
+        """
+        import time
+
         while True:
             if self.is_listening:
                 self.check_new_videos()
+
+            time.sleep(5)  # 休眠 5 秒后再执行
+
+    def thread_scan_and_process_videos(self):
+        """
+        该线程在 while True 内部，每隔 5 秒执行一次 scan_and_process_videos()。
+        """
+        import time
+
+        while True:
+            if self.is_listening:
                 self.scan_and_process_videos()
 
-            time.sleep(10)
+            time.sleep(5)  # 休眠 10 秒后再执行
     
     def updateEventlistener(self, is_listening):
         if is_listening:
@@ -667,7 +742,7 @@ class CheckWebUpdates:
             if clash_id:
                 self.switch_clash_mode("Global")
                 self.switch_clash_profile(clash_id)
-                self.switch_clash_global()
+                self.switch_clash_global("♻️ 自动选择")
 
             # 2) 模拟发送(3秒)
             logger.info(f"正在发送: {video_path} + {txt_path}")
@@ -711,7 +786,7 @@ class CheckWebUpdates:
         self.switch_clash_mode("Rule")
         self.switch_clash_profile("root")
         
-        logger.info("🎉🎉🎉待发送视频,全部发布完成!")
+        logger.info("🎉🎉🎉 视频发布完成!")
 
     def switch_clash_mode(self, mode_value):
         """
@@ -765,7 +840,7 @@ class CheckWebUpdates:
         except Exception as e:
             logger.error(f"切换配置时异常: {e}")
     
-    def switch_clash_global(self):
+    def switch_clash_global(self, mode):
         """
         mode_value: "Rule", "Global", "direct"...
         """
@@ -775,10 +850,10 @@ class CheckWebUpdates:
 
         try:
             url = f"{clash_api_url}/proxies/GLOBAL"
-            data = {"name": "♻️ 自动选择"}
+            data = {"name": mode}
             r = requests.put(url, headers=headers, json=data, timeout=5)
             if r.status_code == 204:
-                logger.info(f"成功切换GLOBAL为 ♻️ 自动选择")
+                logger.info(f"成功切换GLOBAL为 {mode}")
             else:
                 logger.error(f"切换GLOBAL失败: code={r.status_code}, resp={r.text}")
         except Exception as e:
@@ -794,88 +869,158 @@ class CheckWebUpdates:
         except Exception as e:
             logger.error(f"获取视频时长时发生错误: {e}")
             return 0
+    
+    def gen_template(self, input_file, start_time, duration, video_title, part_label):
+        print('gen_template')
+        video_width = 720
+        video_height = 1280
+        video_layer = []
+        title_layer = []
+        part_layer = []
+
+        video_layer.append({
+            "res": input_file,
+            "type": "video",
+            "startTime": 0,
+            "duration": duration,
+            "positionType": "relative",
+            "positionX": 0,
+            "positionY": 0,
+            "params": {
+                "trimStartTime": start_time,
+                "width": video_width,
+                "height": video_height,
+                "animation": 0
+            }
+        })
+
+        thisFileDir = os.path.join(script_dir, "fonts")
+
+        fontSize = 5
+        part_fontSize = 20
+        if len(video_title) > 24:
+            # 在前 24 个字符范围内找最后一个空格
+            idx = video_title.rfind(" ", 0, 24)
+            if idx == -1:
+                # 若未找到空格，直接在第 24 个字符强制换行
+                video_title = video_title[:24] + "\n" + video_title[24:]
+            else:
+                # 若找到了空格，在该空格处换行
+                video_title = video_title[:idx] + "\n" + video_title[idx+1:]
+        
+        c = {
+            "rotate": 0,
+            "backgroundColor": "#00ffffff",
+            "textColor": "#ff7ffb58",
+            "stroke": 12,
+            "strokeColor": "#ff58834c",
+            "shadow": 16,
+            "shadowColor": "#fffdfffb",
+            "shadowBlur": 200,
+            "shadowDistance": 6,
+            "shadowAngle": -45,
+            "alignment": 2,
+            "spacing": 1,
+            "leading": 40,
+            "fontSize": fontSize,
+            "position": 0,
+            "font": os.path.join(thisFileDir, "IndivisibleApp-Bold.ttf")
+        }
+
+        d = {
+            "rotate": 0,
+            "backgroundColor": "#00ffffff",
+            "textColor": "#ff000000",
+            "stroke": 12,
+            "strokeColor": "#ff666666",
+            "shadow": 16,
+            "shadowColor": "#00fdfffb",
+            "shadowBlur": 200,
+            "shadowDistance": 6,
+            "shadowAngle": -45,
+            "alignment": 2,
+            "spacing": 1,
+            "leading": 40,
+            "fontSize": part_fontSize,
+            "position": 0,
+            "font": os.path.join(thisFileDir, "IndivisibleApp-Bold.ttf")
+        }
+
+        title_layer.append({
+            "res": video_title,
+            "type": "text",
+            "startTime": 0,
+            "duration": duration,
+            "positionType": "relative",
+            "positionX": 0,
+            "positionY": -0.65,
+            "params": c
+        })
+
+        part_layer.append({
+            "res": part_label,
+            "type": "text",
+            "startTime": 0,
+            "duration": duration,
+            "positionType": "relative",
+            "positionX": 0,
+            "positionY": 0.65,
+            "params": d
+        })
+
+        rdx = random.randint(100,99999999)
+        tempDir = os.path.join(script_dir, ".temp")
+        if os.path.exists(tempDir):
+            shutil.rmtree(tempDir)
+        os.makedirs(tempDir)
+
+        inputArgs = os.path.join(tempDir, f"genTemplate_{rdx}.in")
+        if os.path.exists(inputArgs):
+            os.remove(inputArgs)
+        with open(inputArgs, 'w') as f:
+            json.dump({
+                "width":video_width,
+                "height":video_height,
+                "layer":[
+                    video_layer,
+                    title_layer,
+                    part_layer
+                ]
+            }, f)
+
+        outputArgs = os.path.join(tempDir, f"genTemplate_{rdx}")
+        if os.path.exists(outputArgs):
+            shutil.rmtree(outputArgs)
+        os.makedirs(outputArgs)
+        print(f"inputArgs:@{inputArgs}")
+        try:
+            genertor_template.generateTemplate(inputArgs, outputArgs, searchPath=os.environ.get('GLOBAL_CACHE_TEMPLATE_GENERATOR_BINARY_DIR', ''), useHardware=False, printLog=True)
+        except subprocess.CalledProcessError as e:
+            shutil.rmtree(outputArgs)
+            raise e
+        finally:
+            print(f"inputArgs finally")
+        return outputArgs
 
     def cut_video(self, input_file, output_file, start_time, duration, video_title, part_label=None):
-        """
-        使用 ffmpeg 截取视频，并重新编码:
-        1) 从 start_time 开始, 截取 duration 秒
-        2) scale 到宽=1080, 若高度 >1920 则等比缩小, 否则 pad 黑色 => 9:16 (1080x1920)
-        3) 顶部(1/4处)多行文字(来自 video_title)，使用 (w-text_w)/2 水平居中
-        4) 若 part_label 有值，则在底部(最后200px附近)再绘一行白字(不加白底)
-        5) 去掉原视频 metadata
-        """
+        start_time_sec = time.time()
         try:
-            # 简单多行拆分: 每行最多 max_chars_per_line 个字符
-            def wrap_text(text, max_chars_per_line=35):
-                lines = []
-                for i in range(0, len(text), max_chars_per_line):
-                    lines.append(text[i : i + max_chars_per_line])
-                return "\n".join(lines)
+            this_template = self.gen_template(input_file, start_time, duration, video_title, part_label)
 
-            wrapped_title = wrap_text(video_title, max_chars_per_line=35)
-
-            # 根据平台替换成有效字体:
-            # Windows: font_path = "C:/Windows/Fonts/Arial.ttf"
-            # macOS:   font_path = "/System/Library/Fonts/Supplemental/Arial.ttf"
-            # Linux:   font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-            font_path = "/System/Library/Fonts/Supplemental/Arial.ttf"
-
-            # A) 强制竖屏(1080x1920)
-            filters = [
-                "scale=1080:-1:force_original_aspect_ratio=decrease",
-                "pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black"
-            ]
-
-            # B) 顶部多行文本 => 多行都水平居中
-            #   做法: x=(w-text_w)/2, y=(h/4 - text_h/2)
-            #   fix_bounds=1 避免文字越界被截
-            draw_top = (
-                f"drawtext=fontfile='{font_path}':"
-                f"text='{wrapped_title}':"
-                "fontcolor=white:fontsize=64:line_spacing=10:fix_bounds=1:"
-                "x=(w-text_w)/2:y=(h/5 - text_h/2):"
-                "shadowcolor=black:shadowx=2:shadowy=2"
-            )
-            filters.append(draw_top)
-
-            # C) 若 part_label => 在底部显示一行白字
-            if part_label:
-                # 假设放在 y= (1920 - 100 - text_h/2) 附近
-                # 或者用 y= 1720 + (200-text_h)/2 也可以
-                # 这里示例写 y=(h-100 - text_h/2)
-                draw_bottom = (
-                    f"drawtext=fontfile='{font_path}':"
-                    f"text='{part_label}':"
-                    "fontcolor=#434343:fontsize=200:line_spacing=10:fix_bounds=1:"
-                    "x=(w-text_w)/2:y=(h-400 - text_h/2):"
-                    "shadowcolor=black:shadowx=2:shadowy=2"
-                )
-                filters.append(draw_bottom)
-
-            vf_filter = ",".join(filters)
-
-            command = [
-                get_ffmpeg_path(),
-                '-i', input_file,
-                '-nostdin',
-                '-ss', str(start_time),
-                '-t', str(duration),
-                '-vf', vf_filter,
-
-                '-c:v', 'libx264',
-                '-crf', '18',
-                '-preset', 'fast',
-
-                '-c:a', 'aac',
-                '-b:a', '128k',
-
-                '-map_metadata', '-1',
-                '-y',
-                output_file
-            ]
-
-            subprocess.run(command, check=True)
+            if os.path.exists(this_template):
+                name = Path(this_template).name
+                genertor_template.executeTemplate({
+                    "input":[],
+                    "template":this_template,
+                    "params":{},
+                    "output":output_file}, searchPath=os.environ.get('GLOBAL_CACHE_TEMPLATE_GENERATOR_BINARY_DIR', ''), useAdaptiveDuration=True)
+            
+            utils.updateVideoMeta(output_file)
             logger.info(f"视频切割/缩放/加文字完成: {output_file}")
-
         except Exception as e:
             logger.error(f"cut_video时发生错误: {e}")
+        finally:
+            end_time_sec = time.time()  # 2) 记录结束时间
+            elapsed_sec = end_time_sec - start_time_sec
+            # 3) 打印耗时日志
+            logger.info(f"本次 cut_video 耗时：{elapsed_sec:.2f} 秒")
