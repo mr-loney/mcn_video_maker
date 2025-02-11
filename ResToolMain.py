@@ -22,6 +22,7 @@ from tts_panel import TTSGenerateFrame
 from checkweb import CheckWebUpdates
 from confirmDialog import ConfirmDialog
 import sys
+import ExportVideoWithRyry
 
 LAST_FOLDER_PATH_FILE = "last_folder_path.json"  # 保存上次路径的文件名
 
@@ -283,6 +284,7 @@ class FolderListApp(wx.Frame):
         download_bak_button = wx.Button(panel, label="仅拉取原始资源")  # 新增拉取资源按钮
         download_button = wx.Button(panel, label="拉取全部资源")  # 新增拉取资源按钮
         export_button = wx.Button(panel, label="导出视频")
+        self.export_state_button = wx.Button(panel, label="")
 
         self.is_listening = False
         
@@ -295,6 +297,7 @@ class FolderListApp(wx.Frame):
         button_sizer.Add(download_bak_button, flag=wx.LEFT, border=10)
         button_sizer.Add(download_button, flag=wx.LEFT, border=10)
         button_sizer.Add(export_button, flag=wx.LEFT, border=10)
+        button_sizer.Add(self.export_state_button, flag=wx.LEFT, border=10)
 
         # 主布局
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -313,7 +316,13 @@ class FolderListApp(wx.Frame):
         submit_button.Bind(wx.EVT_BUTTON, self.on_submit)
         download_bak_button.Bind(wx.EVT_BUTTON, self.download_resources_bak)  # 绑定拉取资源事件
         download_button.Bind(wx.EVT_BUTTON, self.download_resources_nol)  # 绑定拉取资源事件
-        export_button.Bind(wx.EVT_BUTTON, self.export_select_resources)  # 绑定拉取资源事件
+        #视频导出，管理器+事件监听
+        export_button.Bind(wx.EVT_BUTTON, self.export_select_resources)
+        self.export_state_button.Bind(wx.EVT_BUTTON, self.export_state_show)
+        self.export_task_manager = ExportVideoWithRyry.ExportTaskManager(parent_window=self)
+        self.Bind(ExportVideoWithRyry.EVT_EXPORT_COMPLETE, self.on_export_complete)
+        self.export_state_button.Hide()
+        
         self.Bind(wx.EVT_CLOSE, self.on_close_app)
 
         # 设置拖放功能
@@ -492,44 +501,29 @@ class FolderListApp(wx.Frame):
         self.only_bak = False
         self.download_resources(event)
     
+    def on_export_complete(self, event):
+        self.export_state_button.SetLabel(event.msg)
+        if event.is_start and not self.export_state_button.IsShown():
+            self.export_state_button.Show()  # 隐藏导出状态按钮
+        if event.is_end and self.export_state_button.IsShown():
+            self.export_state_button.Hide()  # 隐藏导出状态按钮
+            wx.CallAfter(message_dialog.show_custom_message_dialog, self, f"点击关闭", "任务全部结束")
+            task_window = ExportVideoWithRyry.TaskStatusWindow(self, self.export_task_manager)
+            task_window.Show()
+        self.export_state_button.Refresh()
+        self.export_state_button.GetParent().Layout()
+            
+    def export_state_show(self,event):
+        task_window = ExportVideoWithRyry.TaskStatusWindow(self, self.export_task_manager)
+        task_window.Show()
+        
     def export_select_resources(self, event):
-        import ExportVideoWithRyry
         folder_path = self.folder_picker.GetPath()
-        all_cnt = 0
-        success_cnt = 0
-        error_msg = ""
         for subfolder, data in self.folder_data.items():
             if data["checkbox"].GetValue() == True:
-                #export
-                full_path = os.path.join(folder_path, subfolder)
-                config_path = os.path.join(full_path, "config.json")
-                if not os.path.exists(config_path):
-                    continue
-
-                with open(config_path, 'r') as config_file:
-                    config = json.load(config_file)
-                ftp_folder_name = config.get("ftp_folder_name", "")
-                social_account = config.get("social_account", "")
-                if not ftp_folder_name or not social_account:
-                    continue
-                base_ftp_path = "ftp://183.6.90.205:2221/mnt/NAS/mcn/aigclib/"+ftp_folder_name+"/{userid}"
-                #替换config中的ftp路径为full_path路径
-                config_str = json.dumps(config)
-                config_str = config_str.replace(base_ftp_path, full_path)
-                config = json.loads(config_str)
-                
-                output_dir = os.path.join(full_path, "output")
-                try:
-                    all_cnt+=1
-                    cnt = ExportVideoWithRyry.export(config, output_dir)
-                    success_cnt += 1
-                except:
-                    error_msg += f"\n{subfolder}"
-                    pass
-        if success_cnt == all_cnt:
-            wx.CallAfter(message_dialog.show_custom_message_dialog, self, f"全部成功 ✅", "导出结束")
-        else:
-            wx.CallAfter(message_dialog.show_custom_message_dialog, self, f"成功 {success_cnt}/{all_cnt} 个，失败模版是：\n{error_msg}", "导出结束")
+                task = ExportVideoWithRyry.ExportTask(subfolder, data, data["mlabel"].LabelText, self.folder_picker)
+                self.export_task_manager.add_task(task)
+        self.export_task_manager.start()
         
     def download_resources(self, event):
         """拉取资源按钮事件"""
