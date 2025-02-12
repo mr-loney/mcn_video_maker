@@ -185,15 +185,16 @@ class GenerateListFrame(wx.Frame):
         """
         try:
             if not os.path.isfile(req_path):
-                # 即便加了downloading_set，也可能用户手动删除
-                return
+                return  # 如果请求的 JSON 文件不存在，直接跳过
+
+            # 读取 JSON 文件中的数据
             with open(req_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            flows = data.get("flows", [])
-            # flows: [ { "flow_output": "ftp://...", "local_path": "/Users/..." }, ... ]
 
-            # 并行下载 flows
+            flows = data.get("flows", [])
             download_tasks = []
+
+            # 并行下载 flows 中的资源
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as flow_executor:
                 for flow in flows:
                     flow_output = flow.get("flow_output", "")
@@ -202,33 +203,40 @@ class GenerateListFrame(wx.Frame):
                     else:
                         ftp_path = "ftp://183.6.90.205:2221/mnt/NAS/mcn/" + flow_output
                         local_path = flow.get("local_path", "")
+
                         # 如果 local_path 不为空，则拼上时间戳(时)
                         if local_path and "/reslib/" in local_path:
                             time_stamp = time.strftime("%Y%m%d_%H")
                             local_path = f"{local_path}_{time_stamp}"
-                        if ftp_path and local_path:
-                            download_tasks.append(flow_executor.submit(
-                                self.download_flow_output, ftp_path, local_path
-                            ))
+
+                        # 资源文件已经存在就跳过下载
+                        if not self.is_file_already_downloaded(local_path):
+                            if ftp_path and local_path:
+                                download_tasks.append(flow_executor.submit(
+                                    self.download_flow_output, ftp_path, local_path
+                                ))
 
             # 等待所有下载完成
             concurrent.futures.wait(download_tasks)
 
-            # 下载完后删除 req_xxxx.json
-            # os.remove(req_path)
-
-            # 下载完后重命名 req_xxxx.json => req_xxxx_ok.json
-            base, ext = os.path.splitext(req_path)     # base="/.../req_xxxx", ext=".json"
-            ok_path = base + "_ok" + ext               # => "/.../req_xxxx_ok.json"
+            # 下载完成后将 req 文件重命名
+            base, ext = os.path.splitext(req_path)
+            ok_path = base + "_ok" + ext
             os.rename(req_path, ok_path)
             print(f"执行完成, 已将 {req_path} 重命名为 {ok_path}.")
 
         except Exception as e:
             print(f"download_and_remove_req 出错: {req_path}, {e}")
         finally:
-            # 不论成功与否，都要移除以防下次阻塞
+            # 移除当前请求路径，防止下次阻塞
             if req_path in self.downloading_set:
                 self.downloading_set.remove(req_path)
+
+    def is_file_already_downloaded(self, local_path):
+        """
+        检查文件是否已经存在（用于避免重复下载）
+        """
+        return os.path.exists(local_path)  # 如果文件已存在，返回 True
 
     def download_flow_output(self, ftp_url, local_dir):
         """
@@ -271,15 +279,114 @@ class GenerateListFrame(wx.Frame):
             ftp.connect(ftp_host, ftp_port, timeout=30)
             ftp.login(ftp_user, ftp_pass)
 
-            # 确保 remote_path 是个目录(或可进入)
-            # 这里递归下载 entire remote_path => local_dir
-            self.download_entire_ftp_directory(ftp, remote_path, local_dir)
+            # 4) 调用新的并行下载函数
+            self.download_entire_ftp_directory_parallel(
+                ftp_host, ftp_port,
+                ftp_user, ftp_pass,
+                remote_path, local_dir
+            )
             
             ftp.quit()
-            
             print(f"下载完成: {ftp_url} => {local_dir}")
         except Exception as e:
             print(f"下载失败: {ftp_url}, 错误: {e}")
+
+    def download_entire_ftp_directory_parallel(self, ftp_host, ftp_port, ftp_user, ftp_pass,
+                                           remote_dir, local_dir):
+        """
+        并行下载 remote_dir 下的所有文件(4并发)，对子目录递归处理(串行)。
+        每个文件使用新的FTP连接来下载，避免多线程冲突。
+        """
+        # 确保本地目录存在
+        os.makedirs(local_dir, exist_ok=True)
+
+        # 先用一次性FTP连接列出当前层
+        ftp = ftplib.FTP()
+        ftp.connect(ftp_host, ftp_port, timeout=30)
+        ftp.login(ftp_user, ftp_pass)
+        try:
+            ftp.cwd(remote_dir)
+        except Exception as e:
+            print(f"无法进入目录: {remote_dir}, 错误: {e}")
+            ftp.quit()
+            return
+
+        items = ftp.nlst()  # 当前层所有项
+        ftp.quit()
+
+        file_list = []
+        dir_list = []
+        # 分辨每个 item 是文件还是子目录
+        for item in items:
+            if item in (".", ".."):
+                continue
+            remote_item_path = remote_dir.rstrip("/") + "/" + item
+            local_item_path = os.path.join(local_dir, item)
+
+            if self.is_ftp_directory(ftp_host, ftp_port, ftp_user, ftp_pass, remote_item_path):
+                # 是目录
+                dir_list.append((remote_item_path, local_item_path))
+            else:
+                # 是文件
+                file_list.append((remote_item_path, local_item_path))
+
+        # 并行下载 file_list(4线程)
+        max_workers = 4
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = []
+            for (rpath, lpath) in file_list:
+                futures.append(executor.submit(
+                    self.download_single_file_new_ftp,
+                    ftp_host, ftp_port, ftp_user, ftp_pass,
+                    rpath, lpath
+                ))
+            concurrent.futures.wait(futures)
+
+        # 递归处理子目录(串行) => 你也可以把它并行，但需更多逻辑
+        for (sub_rpath, sub_lpath) in dir_list:
+            self.download_entire_ftp_directory_parallel(
+                ftp_host, ftp_port,
+                ftp_user, ftp_pass,
+                sub_rpath, sub_lpath
+            )
+    
+    def is_ftp_directory(self, ftp_host, ftp_port, ftp_user, ftp_pass, path):
+        """
+        判断 path 是否目录:
+        - 尝试 ftp.cwd(path)，若成功 => 目录；失败 => 文件/无权限
+        """
+        try:
+            ftp = ftplib.FTP()
+            ftp.connect(ftp_host, ftp_port, timeout=30)
+            ftp.login(ftp_user, ftp_pass)
+            ftp.cwd(path)
+            ftp.quit()
+            return True
+        except:
+            return False
+    
+    def download_single_file_new_ftp(self, ftp_host, ftp_port, ftp_user, ftp_pass,
+                                 remote_file_path, local_file_path):
+        """
+        每次下载一个文件都新建 FTP 连接 => 方便多线程。
+        """
+        os.makedirs(os.path.dirname(local_file_path), exist_ok=True)
+
+        try:
+            ftp = ftplib.FTP()
+            ftp.connect(ftp_host, ftp_port, timeout=30)
+            ftp.login(ftp_user, ftp_pass)
+
+            remote_dir = os.path.dirname(remote_file_path)
+            base_name = os.path.basename(remote_file_path)
+            ftp.cwd(remote_dir)
+
+            print(f"[Thread] Downloading file => {remote_file_path} => {local_file_path}")
+            with open(local_file_path, "wb") as f:
+                ftp.retrbinary(f"RETR " + base_name, f.write)
+            ftp.quit()
+        except Exception as e:
+            print(f"下载文件出错: {remote_file_path}, 错误: {e}")
 
     def download_entire_ftp_directory(self, ftp, remote_dir, local_dir):
         """
