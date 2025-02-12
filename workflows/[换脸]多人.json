@@ -343,8 +343,8 @@
   "55": {
     "inputs": {
       "invert_mask": false,
-      "grow": 12,
-      "blur": 6,
+      "grow": 8,
+      "blur": 8,
       "mask": [
         "37",
         1
@@ -415,7 +415,7 @@
   },
   "62": {
     "inputs": {
-      "seed": 254940668609937,
+      "seed": 67709617627372,
       "steps": 20,
       "cfg": 1,
       "sampler_name": "euler",

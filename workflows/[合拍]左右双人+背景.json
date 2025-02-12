@@ -68,7 +68,7 @@
     "inputs": {
       "weight": 1,
       "start_at": 0,
-      "end_at": 1,
+      "end_at": 0.8,
       "model": [
         "2",
         0
@@ -96,14 +96,14 @@
     },
     "class_type": "ApplyPulidFlux",
     "_meta": {
-      "title": "Apply PuLID Flux"
+      "title": "左边人脸PuLID设置"
     }
   },
   "12": {
     "inputs": {
       "weight": 1,
       "start_at": 0,
-      "end_at": 1,
+      "end_at": 0.8,
       "model": [
         "11",
         0
@@ -131,7 +131,7 @@
     },
     "class_type": "ApplyPulidFlux",
     "_meta": {
-      "title": "Apply PuLID Flux"
+      "title": "右边人脸PuLID设置"
     }
   },
   "13": {
@@ -161,7 +161,7 @@
   },
   "16": {
     "inputs": {
-      "text": "img_03_07_2020_87745-057, 8K HD, realistic photograph, two young women, long_legs, standing close, on tokyo street, at middle-night",
+      "text": "img_03_07_2020_87745-057, 8K HD, Realistic photo of two young women, long legs, standing close together, on the streets of Tokyo, at midnight. The woman on the left is wearing a white dress, the woman on the right is wearing a black T-shirt and blue jeans.",
       "clip": [
         "3",
         0
@@ -187,8 +187,8 @@
   },
   "18": {
     "inputs": {
-      "seed": 815454236509423,
-      "steps": 20,
+      "seed": 314806611108837,
+      "steps": 25,
       "cfg": 1,
       "sampler_name": "euler",
       "scheduler": "normal",

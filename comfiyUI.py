@@ -68,13 +68,16 @@ class ImageGenerateFrame(wx.Frame):
         # self.workflow_files = [f for f in os.listdir(self.workflows_dir) if f.endswith(".json")]
         # 1) 定义前缀的优先级
         prefix_order = [
-            "[生图]",  # 0
-            "[修图]",  # 1
-            "[换脸]",  # 2
-            "[放大]",  # 3
-            "[合拍]",  # 4
-            "[配音]",  # 5
-            "[视频]",  # 6
+            "[生图]",
+            "[修图]",
+            "[重绘]",
+            "[置物]",
+            "[泛化]",
+            "[换脸]",
+            "[放大]",
+            "[合拍]",
+            "[配音]",
+            "[视频]",
         ]
         def file_sort_key(f):
             """

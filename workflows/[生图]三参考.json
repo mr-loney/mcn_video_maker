@@ -56,24 +56,11 @@
       "title": "加载风格模型"
     }
   },
-  "5": {
-    "inputs": {
-      "text": "img_03_07_2020_87745-057, 8K HD, realistic photograph, 1girl, sitting on grass, legs",
-      "clip": [
-        "7",
-        0
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "正向提示词"
-    }
-  },
   "6": {
     "inputs": {
       "guidance": 3.5,
       "conditioning": [
-        "5",
+        "24",
         0
       ]
     },
@@ -94,40 +81,10 @@
       "title": "双CLIP加载器"
     }
   },
-  "8": {
-    "inputs": {
-      "seed": 90093143809972,
-      "steps": 20,
-      "cfg": 1,
-      "sampler_name": "euler",
-      "scheduler": "normal",
-      "denoise": 1,
-      "model": [
-        "12",
-        0
-      ],
-      "positive": [
-        "22",
-        0
-      ],
-      "negative": [
-        "9",
-        0
-      ],
-      "latent_image": [
-        "10",
-        0
-      ]
-    },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "K采样器"
-    }
-  },
   "9": {
     "inputs": {
       "conditioning": [
-        "5",
+        "24",
         0
       ]
     },
@@ -185,7 +142,7 @@
   "14": {
     "inputs": {
       "samples": [
-        "8",
+        "25",
         0
       ],
       "vae": [
@@ -280,7 +237,7 @@
     },
     "class_type": "LoadImage",
     "_meta": {
-      "title": "加载参考图像"
+      "title": "加载第三张参考图像"
     }
   },
   "22": {
@@ -324,6 +281,49 @@
     "class_type": "LayerUtility: PurgeVRAM",
     "_meta": {
       "title": "LayerUtility: Purge VRAM"
+    }
+  },
+  "24": {
+    "inputs": {
+      "text": "img_03_07_2020_87745-057, 8K HD, realistic photograph, 1girl, sitting on grass,",
+      "clip": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "正向提示词"
+    }
+  },
+  "25": {
+    "inputs": {
+      "seed": 90093143809972,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "12",
+        0
+      ],
+      "positive": [
+        "22",
+        0
+      ],
+      "negative": [
+        "9",
+        0
+      ],
+      "latent_image": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
     }
   }
 }

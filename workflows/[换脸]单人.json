@@ -155,7 +155,7 @@
   },
   "35": {
     "inputs": {
-      "image": "1_0_3osa.png",
+      "image": "2.jpg",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -284,7 +284,7 @@
   },
   "44": {
     "inputs": {
-      "image": "7.jpg",
+      "image": "4.jpg",
       "upload": "image"
     },
     "class_type": "LoadImage",
@@ -349,8 +349,8 @@
   "55": {
     "inputs": {
       "invert_mask": false,
-      "grow": 12,
-      "blur": 6,
+      "grow": 8,
+      "blur": 8,
       "mask": [
         "37",
         1
@@ -421,7 +421,7 @@
   },
   "62": {
     "inputs": {
-      "seed": 1086301401899463,
+      "seed": 1000070670025970,
       "steps": 20,
       "cfg": 1,
       "sampler_name": "euler",
