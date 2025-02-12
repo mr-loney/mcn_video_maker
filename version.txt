@@ -9,3 +9,9 @@
 4.视频孪生使用skymedia模板输出
 5.批量skymedia生成视频
 6.支持vidu生成
+
+付费推荐
+Magnific 重打光
+flair-ai 商品图
+suno 音乐生成
+GPT/DS 大语言生成

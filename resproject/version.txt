@@ -25,3 +25,9 @@
 彩蛋:
 1.也可以不绑定URL,手动放置result.mp4,或result_1.mp4,result_2.mp4,result_3.mp4,以及一个叫new.txt的文本到文件夹/output目录,系统也会自动帮你发视频,new.txt中第一行写视频描述,第二行写#tag
 2.如果要强制测试蹲视频到发布视频的流程,可以把checkweb.json中的值改成"debug"
+
+付费推荐
+Magnific 重打光
+flair-ai 商品图
+suno 音乐生成
+GPT/DS 大语言生成
