@@ -36,7 +36,7 @@ def publish_video(video_dir, video_name, browser_id, product_id=None, is_pre="�
                 if len(title) > 0 and len(topics) > 0:
                     print(video_file_path)
                     driver, _ = chrome_utils.get_driver(browser_id)
-                    time.sleep(3)
+                    time.sleep(2)
                     if driver:
                         du = driver_utils.DriverUtils(driver)
                         driver.switch_to.new_window('tab')
@@ -44,17 +44,44 @@ def publish_video(video_dir, video_name, browser_id, product_id=None, is_pre="�
                         video_publisher = TiktokVideoPublish(driver, du, 'account_name')
                         log.logger.info('进入视频发布页面')
                         du.open_url('https://www.tiktok.com/tiktokstudio/upload?from=upload')
-                        time.sleep(10)
+                        time.sleep(1)
                         try:
                             item = driver.find_element(By.TAG_NAME, 'iframe')
                             driver.switch_to.frame(item)
                         except:
                             pass
-                        if video_publisher.upload_video(video_file_path):
-                            log.logger.info('上传视频成功')
-                        else:
-                            log.logger.info(f'上传视频失败{video_file_path}')
-                        video_publisher.set_video_title(title, topics)
+                        # if video_publisher.upload_video(video_file_path):
+                        #     log.logger.info('上传视频成功')
+                        # else:
+                        #     log.logger.info(f'上传视频失败{video_file_path}')
+                        # video_publisher.set_video_title(title, topics)
+                        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+                        def do_upload():
+                            if not video_publisher.upload_video(video_file_path):
+                                raise RuntimeError(f"上传视频失败: {video_file_path}")
+                            log.logger.info("上传视频成功")
+
+                        def do_set_title():
+                            video_publisher.set_video_title(title, topics)
+                            log.logger.info("标题设置完成")
+
+                        with ThreadPoolExecutor(max_workers=2) as executor:
+                            futures = []
+                            futures.append(executor.submit(do_upload))
+                            futures.append(executor.submit(do_set_title))
+
+                            # 等待俩任务都完成
+                            for future in as_completed(futures):
+                                try:
+                                    future.result()  # 任意抛出异常都会在这里出现
+                                except Exception as e:
+                                    log.logger.info(f"并行任务出错: {e}")
+                                    # 如果出错，可在此选择 return 或后续处理
+                                    # return
+
+                        log.logger.info("上传视频 & 标题填写已完成(并行)")
+
                         du.random_sleep()
                         if product_id is not None and len(product_id) > 0:
                             try:

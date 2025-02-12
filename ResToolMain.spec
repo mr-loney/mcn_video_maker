@@ -14,6 +14,7 @@ a = Analysis(
         ('loras', 'loras'),
         ('workflows', 'workflows'),
         ('fonts', 'fonts'),
+        ('effects', 'effects'),
         ('vid_workflows', 'vid_workflows'),
         ('hm_workflows', 'hm_workflows'),
         ('audiolist', 'audiolist'),

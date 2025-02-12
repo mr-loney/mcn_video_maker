@@ -100,10 +100,10 @@ class TiktokVideoPublish:
 
     def set_at(self, at_str, actions):
         for i in range(0, len(at_str)):
-            sleep(0.5)
+            sleep(0.3)
             actions.send_keys(at_str[i])
             actions.perform()
-        sleep(3)
+        sleep(1.5)
         actions.send_keys(Keys.ENTER)
         actions.perform()
         sleep(1)
