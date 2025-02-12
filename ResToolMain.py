@@ -1005,24 +1005,28 @@ class FolderListApp(wx.Frame):
         """
         点击“音频生成”时，打开 TTSGenerateFrame 窗口
         """
+        self.timer.Stop()
         folder_path = os.path.join(self.folder_picker.GetPath(), subfolder)
         frame = TTSGenerateFrame(self, folder_path)
         frame.Show()
 
     def show_image_generator(self, event, subfolder):
         """弹出图像生成窗口"""
+        self.timer.Stop()
         folder_path = os.path.join(self.folder_picker.GetPath(), subfolder)
         frame = ImageGenerateFrame(self, folder_path)
         frame.Show()
     
     def show_video_generator(self, event, subfolder):
         """弹出视频生成窗口"""
+        self.timer.Stop()
         folder_path = os.path.join(self.folder_picker.GetPath(), subfolder)
         frame = VideoGenerateFrame(self, folder_path)
         frame.Show()
 
     def show_hm_generator(self, event, subfolder):
         """弹出数字人生成窗口"""
+        self.timer.Stop()
         folder_path = os.path.join(self.folder_picker.GetPath(), subfolder)
         frame = HMGenerateFrame(self, folder_path)
         frame.Show()

@@ -506,6 +506,14 @@ class HMGenerateFrame(wx.Frame):
 
     def on_cancel(self, event):
         self.Close()
+    
+    def Destroy(self):
+        # 1) 自定义逻辑
+        if hasattr(self.parent, "timer"):
+            self.parent.timer.Start(10000)  # 每10秒刷新一次，或你原先的间隔
+        
+        # 2) 调用父类Destroy，否则不会真正释放资源
+        return super().Destroy()
 
     def save_req_json(self, submission):
         """

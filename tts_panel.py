@@ -821,6 +821,14 @@ class TTSGenerateFrame(wx.Frame):
         with open(req_path, "w", encoding="utf-8") as f:
             json.dump(submission, f, ensure_ascii=False, indent=4)
         print(f"[TTS] 已写入: {req_path}")
+    
+    def Destroy(self):
+        # 1) 自定义逻辑
+        if hasattr(self.parent, "timer"):
+            self.parent.timer.Start(10000)  # 每10秒刷新一次，或你原先的间隔
+        
+        # 2) 调用父类Destroy，否则不会真正释放资源
+        return super().Destroy()
 
 
 class BusyDialog(wx.Dialog):
