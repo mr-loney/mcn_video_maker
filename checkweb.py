@@ -17,6 +17,7 @@ import platform
 import random
 import shutil
 import utils
+import colorsys
 
 # 获取当前脚本的路径
 script_path = Path(__file__).resolve()
@@ -362,6 +363,40 @@ class CheckWebUpdates:
         except Exception as e:
             logger.error(f"检查 {folder} ({sub_link}) 时发生错误: {e}")
 
+    
+
+    def get_random_title_colors(self):
+        TITLE_COLOR_PRESETS = [
+            # 1. 白字 + 红色描边
+            ("#ffffffff", "#ffff0000"),
+            # 2. 亮黄 + 粉紫描边
+            ("#ffffff00", "#ffff00ff"),
+            # 3. 珊瑚色 + 巧克力色描边
+            ("#ffff7f50", "#ff8b4513"),
+            # 4. 柠檬肉色 + 橙红描边
+            ("#fffffacd", "#ffff4500"),
+            # 5. 淡绿 + 深绿色描边
+            ("#ff7ffb58", "#ff58834c"),
+            # 6. 淡紫 + 蓝紫描边
+            ("#ffa0a0ff", "#ff202070"),
+            # 7. 沙尔蒙 + 深红描边
+            ("#fffa8072", "#ff8b0000"),
+            # 8. 青柠色 + 深绿色描边
+            ("#ff00ff7f", "#ff006400"),
+            # 9. 金麒麟色 + 巧克力描边
+            ("#ffdaa520", "#ff8b4513"),
+            # 10. 黄绿色 + 深橄榄描边
+            ("#ffadff2f", "#ff556b2f"),
+            # 11. 粉色 + 深粉描边
+            ("#ffffc0cb", "#ffff1493"),
+            # 12. 乳白 + 粉紫描边
+            ("#ffffffe0", "#ffff00ff"),
+        ]
+
+        index = random.randint(0, len(TITLE_COLOR_PRESETS) - 1)
+        textColor, strokeColor = TITLE_COLOR_PRESETS[index]
+        return textColor, strokeColor
+
     def download_video(self, sub_link, folder, web_url, latest_video_title):
         """模拟下载视频并保存到指定路径"""
         start_time_sec = time.time()  # 记录开始时间
@@ -429,17 +464,17 @@ class CheckWebUpdates:
 
                 # 获取视频时长
                 video_duration = self.get_video_duration(result_file)
+                textColor, strokeColor = self.get_random_title_colors()
 
                 # 根据视频时长切割视频
                 if video_duration <= 5 * 60:
-                # if video_duration >= 0:
                     logger.info("视频时长小于5分钟，不进行切割")
 
                     # 先定义一个临时文件名
                     temp_file = os.path.join(output_folder, "temp_1.mp4")
 
                     # 在这里先cut_video到临时文件
-                    self.cut_video(result_file, temp_file, 0, video_duration, latest_video_title, " ")
+                    self.cut_video(result_file, temp_file, 0, video_duration, latest_video_title, " ", textColor, strokeColor)
 
                     end_time_sec = time.time()
                     elapsed_sec = end_time_sec - start_time_sec
@@ -481,7 +516,9 @@ class CheckWebUpdates:
                             start_time=i * segment_duration,
                             duration=segment_duration,
                             video_title=latest_video_title,
-                            part_label=part_label
+                            part_label=part_label,
+                            textColor = textColor,
+                            strokeColor = strokeColor
                         )
                         if os.path.exists(final_file):
                             os.remove(final_file)
@@ -870,7 +907,7 @@ class CheckWebUpdates:
             logger.error(f"获取视频时长时发生错误: {e}")
             return 0
     
-    def gen_template(self, input_file, start_time, duration, video_title, part_label):
+    def gen_template(self, input_file, start_time, duration, video_title, part_label, textColor, strokeColor):
         print('gen_template')
         video_width = 720
         video_height = 1280
@@ -890,7 +927,11 @@ class CheckWebUpdates:
                 "trimStartTime": start_time,
                 "width": video_width,
                 "height": video_height,
-                "animation": 0
+                "animation": 0,
+                "ofParams": {
+                    "0:ScaleX": 1.2,
+                    "0:ScaleY": 1.2,
+                }
             }
         })
 
@@ -908,12 +949,14 @@ class CheckWebUpdates:
                 # 若找到了空格，在该空格处换行
                 video_title = video_title[:idx] + "\n" + video_title[idx+1:]
         
+        # textColor = "#ff7ffb58"
+        # strokeColor = "#ff58834c"
         c = {
             "rotate": 0,
             "backgroundColor": "#00ffffff",
-            "textColor": "#ff7ffb58",
+            "textColor": textColor,
             "stroke": 12,
-            "strokeColor": "#ff58834c",
+            "strokeColor": strokeColor,
             "shadow": 16,
             "shadowColor": "#fffdfffb",
             "shadowBlur": 200,
@@ -1002,10 +1045,10 @@ class CheckWebUpdates:
             print(f"inputArgs finally")
         return outputArgs
 
-    def cut_video(self, input_file, output_file, start_time, duration, video_title, part_label=None):
+    def cut_video(self, input_file, output_file, start_time, duration, video_title, part_label, textColor, strokeColor):
         start_time_sec = time.time()
         try:
-            this_template = self.gen_template(input_file, start_time, duration, video_title, part_label)
+            this_template = self.gen_template(input_file, start_time, duration, video_title, part_label, textColor, strokeColor)
 
             if os.path.exists(this_template):
                 name = Path(this_template).name

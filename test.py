@@ -1,198 +1,117 @@
-import yt_dlp  # 需要安装 yt-dlp
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+示例：使用 Pillow 生成一张包含 12 行预览的图像，
+每行文字使用 TITLE_COLOR_PRESETS 对应的 (textColor, strokeColor)。
+文字含描边，让你可直接看到最直观的撞色效果。
+"""
+
 import os
-import json
-import threading
-import time
-import requests
-from concurrent.futures import ThreadPoolExecutor
-import logging
-import subprocess
-from mutagen.mp4 import MP4
-from feishu import FeiShuDoc
-from pathlib import Path
-import sys
-import yaml
-import platform
+from PIL import Image, ImageDraw, ImageFont
 
-# 设置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger()
+# 12 组配色 => (textColor, strokeColor)
+TITLE_COLOR_PRESETS = [
+    ("#ffffffff", "#ffff0000"),  # 1. 白字 + 红描边
+    ("#ffffff00", "#ffff00ff"),  # 2. 亮黄 + 粉紫描边
+    ("#ffff7f50", "#ff8b4513"),  # 3. 珊瑚 + 巧克力描边
+    ("#fffffacd", "#ffff4500"),  # 4. 柠檬肉色 + 橙红描边
+    ("#ff7ffb58", "#ff58834c"),  # 5. 淡绿 + 深绿色描边
+    ("#ffa0a0ff", "#ff202070"),  # 6. 淡紫 + 蓝紫描边
+    ("#fffa8072", "#ff8b0000"),  # 7. 沙尔蒙 + 深红描边
+    ("#ff00ff7f", "#ff006400"),  # 8. 青柠 + 深绿描边
+    ("#ffdaa520", "#ff8b4513"),  # 9. 金麒麟 + 巧克力描边
+    ("#ffadff2f", "#ff556b2f"),  # 10. 黄绿 + 深橄榄描边
+    ("#ffffc0cb", "#ffff1493"),  # 11. 粉色 + 深粉描边
+    ("#ffffffe0", "#ffff00ff"),  # 12. 乳白 + 粉紫描边
+]
 
-required_fields = {
-            "port": 7890,
-            "socks-port": 7891,
-            "allow-lan": False,
-            "log-level": "info",
-            "external-controller": "127.0.0.1:9090",
-            "secret": "517DE8FBC646FEAD84A5CC1432A578F2"
-        }
-
-required_fields2 = {
-    "port": 7890,
-    "socks-port": 7891,
-    "allow-lan": False,
-    "mode": "Global",  # 这里可选 "Global" or "Rule"
-    "log-level": "info",
-    "external-controller": "127.0.0.1:9090",
-    "secret": "517DE8FBC646FEAD84A5CC1432A578F2",
-    "unified-delay": True,
-    "hosts": {
-        "time.facebook.com": "17.253.84.125",
-        "time.android.com": "17.253.84.125"
-    },
-    "dns": {
-        "enable": True,
-        "use-hosts": True,
-        "nameserver": [
-            "119.29.29.29",
-            "223.5.5.5",
-            "223.6.6.6",
-            "tcp://223.5.5.5",
-            "tcp://223.6.6.6",
-            "tls://dns.google:853",
-            "tls://8.8.8.8:853",
-            "tls://8.8.4.4:853",
-            "tls://dns.alidns.com",
-            "tls://223.5.5.5",
-            "tls://223.6.6.6",
-            "tls://dot.pub",
-            "tls://1.12.12.12",
-            "tls://120.53.53.53",
-            "https://dns.google/dns-query",
-            "https://8.8.8.8/dns-query",
-            "https://8.8.4.4/dns-query",
-            "https://dns.alidns.com/dns-query",
-            "https://223.5.5.5/dns-query",
-            "https://223.6.6.6/dns-query",
-            "https://doh.pub/dns-query",
-            "https://1.12.12.12/dns-query",
-            "https://120.53.53.53/dns-query"
-        ],
-        "default-nameserver": [
-            "119.29.29.29",
-            "223.5.5.5",
-            "223.6.6.6",
-            "tcp://119.29.29.29",
-            "tcp://223.5.5.5",
-            "tcp://223.6.6.6"
-        ]
-    }
-}
-
-def switch_clash_mode(mode_value):
+def hex_to_rgbA(hexcolor):
     """
-    mode_value: "Rule", "Global", "direct"...
+    将 #AARRGGBB 或 #RRGGBB 转成 (R, G, B, A)，Pillow可用。
+    如 "#ffa0a0ff" => (160, 160, 255, 255)
+    如 "#ffffff"   => (255, 255, 255, 255)
     """
-    clash_api_url = "http://127.0.0.1:9090"
-    clash_token   = "517DE8FBC646FEAD84A5CC1432A578F2"
-    headers = {"Authorization": f"Bearer {clash_token}"}
-
-    try:
-        url = f"{clash_api_url}/configs"
-        data = {"mode": mode_value}
-        r = requests.patch(url, headers=headers, json=data, timeout=5)
-        if r.status_code == 204:
-            logger.info(f"成功切换Clash为 {mode_value} 模式!")
-        else:
-            logger.error(f"切换Clash模式失败: code={r.status_code}, resp={r.text}")
-    except Exception as e:
-        logger.error(f"切换Clash模式异常: {e}")
-    
-    if mode_value == "Global":
-        switch_clash_global()
-
-def switch_clash_global():
-    """
-    mode_value: "Rule", "Global", "direct"...
-    """
-    clash_api_url = "http://127.0.0.1:9090"
-    clash_token   = "517DE8FBC646FEAD84A5CC1432A578F2"
-    headers = {"Authorization": f"Bearer {clash_token}"}
-
-    try:
-        url = f"{clash_api_url}/proxies/GLOBAL"
-        data = {"name": "🔰 节点选择"}
-        r = requests.put(url, headers=headers, json=data, timeout=5)
-        if r.status_code == 204:
-            logger.info(f"成功切换GLOBAL为 🔰 节点选择")
-        else:
-            logger.error(f"切换GLOBAL失败: code={r.status_code}, resp={r.text}")
-    except Exception as e:
-        logger.error(f"切换GLOBAL异常: {e}")
-
-def switch_clash_profile(config_name):
-    """
-    将 Clash 整体切换到新的配置文件(而不是切换分组节点)。
-    比如 config_name="A1" -> 加载 /Users/xxx/.config/clash/A1.yaml
-    """
-    clash_api_url = "http://127.0.0.1:9090"
-    clash_token   = "517DE8FBC646FEAD84A5CC1432A578F2"  # 视具体情况
-    headers = {
-        "Authorization": f"Bearer {clash_token}"
-    }
-
-    home_dir = Path.home()  # 跨平台获取用户主目录
-    config_dir = home_dir / ".config" / "clash"
-    config_path = str(config_dir / f"{config_name}.yaml")
-
-    # 先修正/补齐指定字段
-    if config_name == "root":
-        ensure_clash_config_fields(config_path, required_fields)
+    hexcolor = hexcolor.lstrip("#")
+    length = len(hexcolor)
+    if length == 6:  # RRGGBB
+        R = int(hexcolor[0:2], 16)
+        G = int(hexcolor[2:4], 16)
+        B = int(hexcolor[4:6], 16)
+        A = 255
+    elif length == 8:  # AARRGGBB
+        A = int(hexcolor[0:2], 16)
+        R = int(hexcolor[2:4], 16)
+        G = int(hexcolor[4:6], 16)
+        B = int(hexcolor[6:8], 16)
     else:
-        ensure_clash_config_fields(config_path, required_fields2)
+        # 默认白色
+        R, G, B, A = (255, 255, 255, 255)
+    return (R, G, B, A)
 
-    try:
-        url = f"{clash_api_url}/configs?force=true"
-        data = {"path": config_path, "GLOBAL": "🔰 节点选择"}
-
-        resp = requests.put(url, headers=headers, json=data, timeout=5)
-        if resp.status_code == 204:
-            logger.info(f"成功将 Clash 整体切换为配置 {config_name}")
-        else:
-            logger.error(f"切换配置失败: {resp.status_code}, resp={resp.text}")
-    except Exception as e:
-        logger.error(f"切换配置时异常: {e}")
-
-def ensure_clash_config_fields(yaml_path: str, required_data: dict):
+def draw_text_with_stroke(draw, xy, text, font, textColor, strokeColor, stroke_width=3):
     """
-    读取 yaml_path => 加/改 required_data 里的字段 => 覆盖写回
+    在 Pillow ImageDraw 中绘制带描边的文字。
+    :param draw: ImageDraw对象
+    :param xy: (x, y) 文字左上角坐标
+    :param text: 文本
+    :param font: ImageFont
+    :param textColor: (R, G, B, A) 文字颜色
+    :param strokeColor: (R, G, B, A) 描边颜色
+    :param stroke_width: 描边宽度（像素）
     """
-    if not os.path.isfile(yaml_path):
-        # 文件不存在 => 新建一个空字典
-        current = {}
-    else:
-        try:
-            with open(yaml_path, "r", encoding="utf-8") as f:
-                current = yaml.safe_load(f)
-            if not isinstance(current, dict):
-                current = {}
-        except:
-            current = {}
+    x, y = xy
+    # 在 8 个方向 + 中心点绘制 stroke_width 范围，简单粗暴
+    # 也可使用更复杂的环绕, 这里简单写
+    for dx in range(-stroke_width, stroke_width+1):
+        for dy in range(-stroke_width, stroke_width+1):
+            dist = abs(dx) + abs(dy)
+            if dist <= stroke_width:
+                draw.text((x+dx, y+dy), text, font=font, fill=strokeColor)
+    # 最后绘制正文
+    draw.text((x, y), text, font=font, fill=textColor)
 
-    # 递归合并
-    merged = merge_dicts_required(current, required_data)
+def main():
+    # 每行高度
+    line_height = 80
+    # 图像宽度
+    img_width = 1000
+    # 共有 n 组
+    n = len(TITLE_COLOR_PRESETS)
+    # 整个图像高度
+    img_height = line_height * n
 
-    # 写回
-    with open(yaml_path, "w", encoding="utf-8") as f:
-        yaml.dump(merged, f, sort_keys=False, allow_unicode=True)
+    # 创建图像(黑色背景)
+    img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 255))
+    draw = ImageDraw.Draw(img)
 
-def merge_dicts_required(orig: dict, required: dict) -> dict:
-    """
-    对 required 里的字段进行递归覆盖:
-    - 如果 orig 不存在此 key, 则添加
-    - 如果 orig 存在, 但 required[key] 是 dict => 递归进入
-    - 如果 orig 存在, 但 required[key] 不是 dict => 强制覆盖
-    """
-    for key, val in required.items():
-        if isinstance(val, dict):
-            if key not in orig or not isinstance(orig.get(key), dict):
-                orig[key] = {}
-            merge_dicts_required(orig[key], val)
-        else:
-            # 直接覆盖
-            orig[key] = val
-    return orig
+    # 载入字体，可以改成你系统中的某个字体文件
+    # Windows示例: "C:/Windows/Fonts/Arial.ttf"
+    # MacOS示例: "/System/Library/Fonts/Supplemental/Arial.ttf"
+    # 你可以把它放到脚本目录下"fonts/xxx.ttf"
+    font_path = "/System/Library/Fonts/Supplemental/Arial.ttf"
+    if not os.path.isfile(font_path):
+        # 根据实际情况再fallback
+        pass
+    font = ImageFont.truetype(font_path, 40)
+
+    # 依次绘制 12 行
+    for i, (textHex, strokeHex) in enumerate(TITLE_COLOR_PRESETS):
+        textColor = hex_to_rgbA(textHex)
+        strokeColor = hex_to_rgbA(strokeHex)
+
+        # 行文字 => "Line {i+1}: textHex vs strokeHex"
+        text = f"Line{i+1}  (Text: {textHex}, Stroke: {strokeHex})"
+
+        x = 50
+        y = i * line_height + 10
+
+        draw_text_with_stroke(draw, (x, y), text, font, textColor, strokeColor, stroke_width=3)
+
+    # 输出
+    outpath = "title_color_preview.png"
+    img.save(outpath)
+    print(f"已生成预览图: {outpath}")
 
 if __name__ == "__main__":
-    switch_clash_mode("Global")
-    switch_clash_profile("A4")
+    main()
