@@ -356,6 +356,9 @@ class FolderListApp(wx.Frame):
             dlg.Destroy()
 
             if ret == wx.ID_OK:
+                self.timer.Stop()
+                if self.gen_list_frame:
+                    self.gen_list_frame.on_pause()
                 self.is_listening = True
                 btn.SetLabel("结束监听")
                 # 先让界面刷新
@@ -366,6 +369,9 @@ class FolderListApp(wx.Frame):
             else:
                 return
         else:
+            self.timer.Start(10000)
+            if self.gen_list_frame:
+                self.gen_list_frame.on_resume()
             self.is_listening = False
             btn.SetLabel("开始监听")
             wx.GetApp().Yield()

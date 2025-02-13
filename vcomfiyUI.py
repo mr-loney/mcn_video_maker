@@ -134,15 +134,16 @@ class VideoGenerateFrame(wx.Frame):
             prev_flow_output = last_panel.flow_output_ctrl.GetValue()
             prev_local_path = last_panel.local_path_ctrl.GetValue()
             prev_workflow_name = last_panel.get_current_workflow_name()
-            prev_text_controls = last_panel.get_all_text_controls()
-            prev_upload_paths = last_panel.get_all_upload_paths()
+            # prev_text_controls = last_panel.get_all_text_controls()
+            # prev_upload_paths = last_panel.get_all_upload_paths()
 
         new_panel = TaskPanel(
             parent=self.scrolled_panel,
             workflow_dir=self.workflows_dir,
             workflow_files=self.workflow_files,
             default_flow_output=prev_flow_output,
-            default_local_path=prev_local_path
+            default_local_path=prev_local_path,
+            task_index=len(self.task_panels)
         )
 
         self.task_panels.append(new_panel)
@@ -224,7 +225,12 @@ class VideoGenerateFrame(wx.Frame):
                 if flow_api:
                     # 提取 "xxxx/aaaa/test/任务名.json" 中的 "任务名"
                     task_name = flow_api.split('/')[-1].split('.')[0]
-                    cmd_titles.append(task_name)
+                    if task_name == "runway":
+                        cmd_titles.append(flow.get("flow_title", "[普通]视频生成"))
+                    elif task_name == "vidu":
+                        cmd_titles.append(flow.get("flow_title", "[高级]视频生成"))
+                    else:
+                        cmd_titles.append(task_name)
 
             # 拼接所有任务名，使用 "-" 连接
             cmd_title = "-".join(cmd_titles)
@@ -328,6 +334,15 @@ class VideoGenerateFrame(wx.Frame):
                     new_flow_inputs[key] = ftp_path
                 else:
                     new_flow_inputs[key] = sub_dict
+            
+            # === 新增：如果 "start"/"center"/"end" 有任何非空，就把它作为 folder_path ===
+            folder_path = ""
+            for special_key in ["start", "center", "end"]:
+                val = new_flow_inputs.get(special_key, "")
+                if val:  # 如果不为空，就用它
+                    folder_path = val
+                    new_flow_inputs["folder_path"] = folder_path
+                    break
 
             # 替换
             flow["flow_inputs"] = new_flow_inputs
@@ -351,6 +366,8 @@ class VideoGenerateFrame(wx.Frame):
     def upload_all_to_ftp(self, submission):
         ftp_reslib_base = "ftp://183.6.90.205:2221/mnt/NAS/mcn/reslib"
         local_to_ftp = {}
+        flow_to_ftp = {}
+        flow_node_ftp = {}
 
         time_stamp = time.strftime("%Y%m%d_%H%M%S")
         random_str = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
@@ -358,6 +375,8 @@ class VideoGenerateFrame(wx.Frame):
 
         for flow in submission["flows"]:
             flow_inputs = flow.get("flow_inputs", {})
+            flow_code = flow.get("flow_code", "")
+            random_code = flow.get("flow_fkey", "")
             for node_id, node_data in flow_inputs.items():
                 # ---------- 处理 image ----------
                 if "image" in node_data:
@@ -366,27 +385,50 @@ class VideoGenerateFrame(wx.Frame):
                         # 单文件
                         if os.path.isfile(image_data):
                             base = os.path.basename(image_data)
-                            ftp_path = f"{ftp_reslib_dir}/{base}"
-                            local_to_ftp[image_data] = ftp_path
+                            ftp_path = f"{ftp_reslib_dir}{random_code}/{base}"
+                            local_to_ftp[flow_code+""+image_data] = ftp_path
+                            flow_to_ftp[flow_code+""+image_data] = flow
+                            flow_node_ftp[flow_code+""+image_data] = node_id
                     elif isinstance(image_data, list):
                         # 多文件（文件夹内收集来的）
                         for local_path in image_data:
                             if os.path.isfile(local_path):
                                 base = os.path.basename(local_path)
-                                ftp_path = f"{ftp_reslib_dir}/{base}"
-                                local_to_ftp[local_path] = ftp_path
+                                ftp_path = f"{ftp_reslib_dir}{random_code}/{base}"
+                                local_to_ftp[flow_code+""+local_path] = ftp_path
+                                flow_to_ftp[flow_code+""+local_path] = flow
+                                flow_node_ftp[flow_code+""+local_path] = node_id
 
                 # ---------- 处理 video ----------
                 if "video" in node_data:
                     local_vid_path = node_data["video"]
                     if local_vid_path and os.path.isfile(local_vid_path):
                         base_vid = os.path.basename(local_vid_path)
-                        ftp_vid_path = f"{ftp_reslib_dir}/{base_vid}"
-                        local_to_ftp[local_vid_path] = ftp_vid_path
+                        ftp_vid_path = f"{ftp_reslib_dir}{random_code}/{base_vid}"
+                        local_to_ftp[flow_code+""+local_vid_path] = ftp_vid_path
+                        flow_to_ftp[flow_code+""+local_vid_path] = flow
+                        flow_node_ftp[flow_code+""+local_vid_path] = node_id
 
         # (有要上传的文件) => 并发上传
         if local_to_ftp:
-            self.ftp_upload_concurrent(local_to_ftp)
+            self.ftp_upload_concurrent(local_to_ftp, flow_to_ftp, flow_node_ftp)
+
+        new_local_to_ftp = {}
+
+        for local_path, ftp_path in local_to_ftp.items():
+            # 检查 key 中是否包含 "*|--|*"，如果包含，分割并保留后半段
+            if "*|--|*" in local_path:
+                # 分割并取后半段
+                parts = local_path.split("*|--|*", 1)
+                new_local_path = parts[1]  # 取后半段
+            else:
+                new_local_path = local_path  # 如果没有 "*|--|*"，保持原键
+
+            # 将新的键值对存入新的字典
+            new_local_to_ftp[new_local_path] = ftp_path
+
+        # 更新 local_to_ftp 为新的字典
+        local_to_ftp = new_local_to_ftp
 
         # **替换 submission 里的本地路径 => FTP 路径**
         for flow in submission["flows"]:
@@ -421,7 +463,7 @@ class VideoGenerateFrame(wx.Frame):
 
         return submission
     
-    def ftp_upload_concurrent(self, local_to_ftp):
+    def ftp_upload_concurrent(self, local_to_ftp, flow_to_ftp, flow_node_ftp):
         """
         用5线程并发上传 local_path => ftp_path
         ftp: 183.6.90.205:2221, user=mcn, pass=meco@2024+
@@ -431,8 +473,31 @@ class VideoGenerateFrame(wx.Frame):
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_file = {}
             for local_path, ftp_path in local_to_ftp.items():
-                future = executor.submit(self.upload_single_file, local_path, ftp_path)
-                future_to_file[future] = (local_path, ftp_path)
+                if local_path in flow_to_ftp:
+                    if flow_to_ftp[local_path]["flow_title"] == "[普通]视频生视频":
+                        ftp_path = self.append_ext_node(ftp_path, "_v2v")
+                        if local_path in local_to_ftp:
+                            local_to_ftp[local_path] = ftp_path
+                
+                if "*|--|*" in local_path:
+                    # 只 split 一次即可，返回 [前半, 后半]
+                    parts = local_path.split("*|--|*", 1)
+                    # 取后半段
+                    random_code = parts[0]
+                    mlocal_path = parts[1]
+                else:
+                    random_code = ""
+                    mlocal_path = local_path
+
+                if local_path in flow_node_ftp:
+                    node_type = flow_node_ftp[local_path]  # 可能是 "start","center","end"
+                    if node_type in ("start", "center", "end"):
+                        # 把 ftp_path 解析 => ftp://xxx/aaa/bbb.jpg
+                        ftp_path = self.replace_filename_with_special(ftp_path, random_code, node_type)
+                        # 回写新的 ftp_path
+                        local_to_ftp[local_path] = ftp_path
+                future = executor.submit(self.upload_single_file, mlocal_path, ftp_path)
+                future_to_file[future] = (mlocal_path, ftp_path)
 
             # 等待任务完成
             for future in concurrent.futures.as_completed(future_to_file):
@@ -442,7 +507,59 @@ class VideoGenerateFrame(wx.Frame):
                     print(f"上传成功: {local_path} -> {ftp_path}")
                 except Exception as exc:
                     print(f"上传失败: {local_path} => {ftp_path}, 错误: {exc}")
+    
+    def replace_filename_with_special(self, ftp_path: str, random_code: str, node_type: str) -> str:
+        # 1) 必须是 ftp:// 开头，否则原样返回
+        if not ftp_path.startswith("ftp://"):
+            return ftp_path
 
+        # 2) 找到 "ftp://host:port" 后紧跟的第一个 '/'
+        #    这样可以把 prefix = "ftp://host:port"
+        #    rest = "/mnt/NAS/..."
+        idx = ftp_path.find('/', len("ftp://"))  # 在 "ftp://" 之后寻找下一个 '/'
+        if idx == -1:
+            # 如果没有找到 '/', 说明只有 ftp://host 这类的最短形式，则无法替换文件名
+            return ftp_path
+
+        prefix = ftp_path[:idx]       # e.g. "ftp://183.6.90.205:2221"
+        rest = ftp_path[idx:]         # e.g. "/mnt/NAS/mcn/xxx/test.jpg"
+
+        # 3) 拆分 rest => 目录 + 文件名
+        dir_path, file_name = os.path.split(rest)  # => ("/mnt/NAS/mcn/xxx", "test.jpg")
+        root, ext = os.path.splitext(file_name)    # => ("test", ".jpg")
+
+        # 4) 重组文件名 => "{random_code}_{node_type}{ext}"
+        new_file_name = f"{random_code}_{node_type}{ext}"
+
+        # 5) 拼回完整 FTP 路径
+        new_rest = os.path.join(dir_path, new_file_name)  # => "/mnt/NAS/mcn/xxx/Abc123_start.jpg"
+        new_rest = new_rest.replace("\\", "/")            # 以防万一，替换 Windows 反斜杠
+
+        return prefix + new_rest  # => "ftp://183.6.90.205:2221/mnt/NAS/mcn/xxx/Abc123_start.jpg"
+
+    def append_ext_node(self, ftp_path, ext_node):
+        """
+        如果 ftp_path 以文件名结尾，则在文件名中添加 '_v2v' 后缀
+        例如: 
+        输入: "ftp://xxxxx/test.mp4"
+        输出: "ftp://xxxxx/test_v2v.mp4"
+        """
+        prefix = "ftp://"
+        if ftp_path.startswith(prefix):
+            # 去掉 ftp:// 部分，得到路径
+            path = ftp_path[len(prefix):]
+            # 分割路径，获取文件名部分
+            dir_path, file_name = os.path.split(path)
+            # 添加 ext_node 后缀
+            root, ext = os.path.splitext(file_name)
+            new_file_name = f"{root}{ext_node}{ext}"
+            # 组合新的路径
+            new_ftp_path = f"{prefix}{dir_path}/{new_file_name}"
+            return new_ftp_path
+        else:
+            # 如果路径不符合格式，原样返回
+            return ftp_path
+    
     def upload_single_file(self, local_path, ftp_path):
         """
         上传单个文件:
@@ -538,12 +655,13 @@ class MyImageDropTarget(wx.FileDropTarget):
     """
     自定义文件拖放目标，用于接收图片文件拖入到静态位图中。
     """
-    def __init__(self, parent_panel, node_id, preview_bitmap, on_image_selected):
+    def __init__(self, parent_panel, node_id, preview_bitmap, on_image_selected, task_index):
         super().__init__()
         self.parent_panel = parent_panel
         self.node_id = node_id
         self.preview_bitmap = preview_bitmap
         self.on_image_selected = on_image_selected
+        self.task_index = task_index  # 关键：保存任务编号
 
     def OnDropFiles(self, x, y, filenames):
         if not filenames:
@@ -553,15 +671,16 @@ class MyImageDropTarget(wx.FileDropTarget):
         # Distinguish folder vs file
         if os.path.isdir(local_path):
             # 让 parent_panel处理
-            self.on_image_selected(self.node_id, self.preview_bitmap, local_path, is_folder=True)
+            self.on_image_selected(self.task_index, self.node_id, self.preview_bitmap, local_path, is_folder=True)
         else:
-            self.on_image_selected(self.node_id, self.preview_bitmap, local_path, is_folder=False)
+            self.on_image_selected(self.task_index, self.node_id, self.preview_bitmap, local_path, is_folder=False)
         return True
 
 class TaskPanel(wx.Panel):
     """每个TaskPanel对应一个任务."""
-    def __init__(self, parent, workflow_dir, workflow_files, default_flow_output, default_local_path):
+    def __init__(self, parent, workflow_dir, workflow_files, default_flow_output, default_local_path, task_index):
         super().__init__(parent)
+        self.task_index = task_index
         self.workflow_dir = workflow_dir
         self.workflow_files = workflow_files
 
@@ -821,10 +940,10 @@ class TaskPanel(wx.Panel):
                     lambda evt, nid=node_id: self.on_edit_mask(evt, nid))
 
                 # 拖拽/点击
-                drop_target = MyImageDropTarget(self, node_id, bitmap_preview, self.on_image_selected)
+                drop_target = MyImageDropTarget(self, node_id, bitmap_preview, self.on_image_selected, self.task_index)
                 bitmap_preview.SetDropTarget(drop_target)
                 bitmap_preview.Bind(wx.EVT_LEFT_UP,
-                    lambda evt, nid=node_id, bmp=bitmap_preview: self.on_select_image(evt, nid, bmp)
+                    lambda evt, tid=self.task_index, nid=node_id, bmp=bitmap_preview: self.on_select_image(evt, tid, nid, bmp)
                 )
 
                 blocks_upload.append(row_sizer)
@@ -849,10 +968,10 @@ class TaskPanel(wx.Panel):
                 row_sizer.Add(image_path, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
 
                 # 拖拽/点击
-                drop_target = MyImageDropTarget(self, node_id, bitmap_preview, self.on_image_selected)
+                drop_target = MyImageDropTarget(self, node_id, bitmap_preview, self.on_image_selected, self.task_index)
                 bitmap_preview.SetDropTarget(drop_target)
                 bitmap_preview.Bind(wx.EVT_LEFT_UP,
-                    lambda evt, nid=node_id, bmp=bitmap_preview: self.on_select_image(evt, nid, bmp)
+                    lambda evt, tid=self.task_index, nid=node_id, bmp=bitmap_preview: self.on_select_image(evt, tid, nid, bmp)
                 )
 
                 blocks_upload.append(row_sizer)
@@ -1108,7 +1227,7 @@ class TaskPanel(wx.Panel):
         else:
             return image_path
 
-    def on_select_image(self, event, node_id, preview_bitmap):
+    def on_select_image(self, event, task_index, node_id, preview_bitmap):
         """
         打开文件对话框选一张图片，在界面预览，并记录到 self.upload_paths[node_id] = local_path
         """
@@ -1116,15 +1235,17 @@ class TaskPanel(wx.Panel):
         dlg = wx.FileDialog(self, message="选择本地图片/视频", wildcard=wildcard, style=wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             local_path = dlg.GetPath()
-            self.on_image_selected(node_id, preview_bitmap, local_path)
+            self.on_image_selected(task_index, node_id, preview_bitmap, local_path)
         dlg.Destroy()
     
-    def on_image_selected(self, node_id, preview_bitmap, local_path, is_folder=False):
+    def on_image_selected(self, task_index, node_id, preview_bitmap, local_path, is_folder=False):
         """
-        当用户选择/拖拽图片或视频后，更新预览 & 记录路径
+        当用户选择/拖拽图片或文件夹后，更新预览 & 记录路径
         """
+
+        # --- 1) 如果是文件夹，直接保持原逻辑 ---
         if is_folder:
-            # 如果选择的是文件夹 (跟现有逻辑一样)
+            # 如果选择的是文件夹
             app_base_dir = os.path.dirname(os.path.abspath(__file__))
             icon_path = os.path.join(app_base_dir, "folder_icon.png")
             if os.path.isfile(icon_path):
@@ -1142,16 +1263,20 @@ class TaskPanel(wx.Panel):
             self.upload_paths[node_id] = local_path
             return
 
-        # ---------- 如果是文件（图片/视频） -----------
+        # --- 2) 如果是文件，区分是否图片 ---
         ext = os.path.splitext(local_path)[1].lower()
-        VIDEO_EXTS = [".mp4", ".MP4", ".mov", ".avi", ".mkv"]  # 可按需补充
+        VIDEO_EXTS = [".mp4", ".MP4", ".mov", ".avi", ".mkv"]
+        IMAGE_EXTS = [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"]
+
+        # 判定 node_id 是否在 ["start", "center", "end"]
+        special_node_ids = {"start", "center", "end"}
+        is_special_node = (node_id in special_node_ids)
 
         if ext in VIDEO_EXTS:
-            # 提取视频首帧
+            # （保持你现有针对视频的逻辑）
             frame_img = self.extract_first_frame(local_path)
             if frame_img is not None:
                 w, h = preview_bitmap.GetSize()
-                # 缩放
                 orig_w, orig_h = frame_img.GetWidth(), frame_img.GetHeight()
                 ratio = min(w / float(orig_w), h / float(orig_h))
                 new_w = max(1, int(orig_w * ratio))
@@ -1159,21 +1284,107 @@ class TaskPanel(wx.Panel):
                 frame_img = frame_img.Scale(new_w, new_h, wx.IMAGE_QUALITY_HIGH)
                 preview_bitmap.SetBitmap(wx.Bitmap(frame_img))
             else:
-                # 提取失败，可能用一个默认图标或留空
                 w, h = preview_bitmap.GetSize()
                 preview_bitmap.SetBitmap(wx.Bitmap(w, h))
-        else:
-            # 如果是图片 => 跟你原先逻辑一样
-            img = wx.Image(local_path, wx.BITMAP_TYPE_ANY)
-            w, h = preview_bitmap.GetSize()
-            img = img.Scale(w, h, wx.IMAGE_QUALITY_HIGH)
-            preview_bitmap.SetBitmap(wx.Bitmap(img))
 
-        # 更新 upload_paths 和文本框
-        self.upload_paths[node_id] = local_path
-        if node_id in self.image_path_ctrl:
-            self.image_path_ctrl[node_id].SetValue(local_path)
+            # 更新 upload_paths 和文本框
+            self.upload_paths[node_id] = local_path
+            if node_id in self.image_path_ctrl:
+                self.image_path_ctrl[node_id].SetValue(local_path)
+            return
+
+        elif ext in IMAGE_EXTS:
+            # -- 如果是图片，且 node_id in ["start","center","end"]，需要复制改名 --
+            # if is_special_node:
+            #     # 获取当前文件目录和文件名
+            #     dir_name = os.path.dirname(local_path)
+            #     file_name = os.path.basename(local_path)  # 例如 test.jpg
+            #     root, ext_real = os.path.splitext(file_name)  # (test, .jpg)
+
+            #     # 检测是否已经是 test_start.jpg / test_center.jpg / test_end.jpg
+            #     if not self.has_special_suffix(file_name, node_id):
+            #         # 如果没有后缀 => 复制 + 改名
+            #         new_file_name = f"{root}_{node_id}{ext_real}"  # test_start.jpg / test_center.jpg / test_end.jpg
+            #         new_path = os.path.join(dir_name, new_file_name)
+
+            #         try:
+            #             # 如果 new_path 不存在 => 复制一份
+            #             if not os.path.exists(new_path):
+            #                 import shutil
+            #                 shutil.copy2(local_path, new_path)
+            #             # 将 local_path 替换为 new_path
+            #             local_path = new_path
+            #             print(f"已复制并改名: {new_path}")
+            #         except Exception as e:
+            #             print(f"复制并改名失败: {e}")
+
+            # （保持你现有针对图片的逻辑，设置预览）
+            # img = wx.Image(local_path, wx.BITMAP_TYPE_ANY)
+            # w, h = preview_bitmap.GetSize()
+            # img = img.Scale(w, h, wx.IMAGE_QUALITY_HIGH)
+            # preview_bitmap.SetBitmap(wx.Bitmap(img))
+            self.set_image_preview(preview_bitmap, local_path)
+
+            # 更新 upload_paths 和文本框
+            self.upload_paths[node_id] = local_path
+            if node_id in self.image_path_ctrl:
+                self.image_path_ctrl[node_id].SetValue(local_path)
+
+        else:
+            # 其它类型文件（既不是视频，也不是图片），可以做与原先逻辑相同或自己按需求处理
+            # 这里简单示例：用一张未知图标
+            w, h = preview_bitmap.GetSize()
+            preview_bitmap.SetBitmap(wx.Bitmap(w, h))
+
+            self.upload_paths[node_id] = local_path
+            if node_id in self.image_path_ctrl:
+                self.image_path_ctrl[node_id].SetValue(local_path)
     
+    def has_special_suffix(slef, file_name: str, node_id: str) -> bool:
+        """
+        判断 file_name (不含路径) 是否已经含有 _start / _center / _end 后缀。
+        node_id 应该是 "start"/"center"/"end" 之一。
+        """
+        # 拆分扩展名
+        root, ext = os.path.splitext(file_name)
+        # 检测结尾是否匹配
+        needed_suffix = f"_{node_id}"
+        return root.endswith(needed_suffix)
+
+    def set_image_preview(slef, preview_bitmap, local_path):
+        """
+        将 local_path 对应的图像加载后，等比缩放到 preview_bitmap 的大小并显示。
+        若文件不存在或非图像，则显示空白（或可自行改成其他逻辑）。
+        """
+        if not os.path.isfile(local_path):
+            w, h = preview_bitmap.GetSize()
+            preview_bitmap.SetBitmap(wx.Bitmap(w, h))
+            return
+
+        img = wx.Image(local_path, wx.BITMAP_TYPE_ANY)
+        panel_w, panel_h = preview_bitmap.GetSize()
+
+        orig_w, orig_h = img.GetWidth(), img.GetHeight()
+        if orig_w <= 0 or orig_h <= 0:
+            # 如果图片无效，也直接退出
+            w, h = preview_bitmap.GetSize()
+            preview_bitmap.SetBitmap(wx.Bitmap(w, h))
+            return
+
+        # 计算等比缩放：找最小缩放比
+        ratio = min(panel_w / float(orig_w), panel_h / float(orig_h))
+
+        # 计算缩放后尺寸
+        new_w = max(1, int(orig_w * ratio))
+        new_h = max(1, int(orig_h * ratio))
+
+        # 执行缩放
+        img_resized = img.Scale(new_w, new_h, wx.IMAGE_QUALITY_HIGH)
+
+        # 转成位图设置给预览控件
+        bmp = wx.Bitmap(img_resized)
+        preview_bitmap.SetBitmap(bmp)
+
     def extract_first_frame(self, video_path):
         """
         用 OpenCV 打开 video_path，读第一帧并转成 wx.Image
@@ -1197,10 +1408,36 @@ class TaskPanel(wx.Panel):
         image.SetData(frame_rgb.tobytes())  # 每像素 3 bytes, RGB
         return image
 
+    def generate_math_random_code(self, length=8):
+        """生成8位的随机字母数字组合"""
+        return '_'.join(random.choices(string.ascii_letters + string.digits, k=length))
+    
     def get_task_data(self):
         raw_flow_api = self.workflow_choice.GetStringSelection()
         flow_api, _ = os.path.splitext(raw_flow_api)
         flow_inputs = {}
+        flow_title = flow_api
+        flow_code = ""
+        flow_fkey = self.generate_math_random_code()
+        if flow_api == "[普通]图生视频":
+            flow_api = "runway"
+        elif flow_api == "[普通]首尾帧生视频":
+            flow_api = "runway"
+            flow_code = self.generate_math_random_code() + "*|--|*"
+        elif flow_api == "[普通]视频生视频":
+            flow_api = "runway"
+        elif flow_api == "[高级]图生视频":
+            flow_api = "vidu"
+            flow_inputs["type"] = "i2v"
+        elif flow_api == "[高级]首尾帧生视频":
+            flow_api = "vidu"
+            flow_inputs["type"] = "i2v"
+            flow_code = self.generate_math_random_code() + "*|--|*"
+        elif flow_api == "[高级]参考元素生视频":
+            flow_api = "vidu"
+            flow_inputs["type"] = "r2v"
+            flow_code = self.generate_math_random_code() + "*|--|*"
+        
 
         if self.workflow_data:
             # 先处理 text_controls 里存储的文本/下拉框
@@ -1250,6 +1487,9 @@ class TaskPanel(wx.Panel):
 
         return {
             "flow_api": flow_api,
+            "flow_title": flow_title,
+            "flow_code": flow_code,
+            "flow_fkey": flow_fkey,
             "flow_inputs": flow_inputs,
             "flow_output": self.flow_output_ctrl.GetValue(),
             "local_path": self.local_path_ctrl.GetValue()

@@ -1,0 +1,271 @@
+{
+  "5": {
+    "inputs": {
+      "rotate_pitch": 0,
+      "rotate_yaw": 0,
+      "rotate_roll": 0,
+      "blink": 0,
+      "eyebrow": 0,
+      "wink": 0,
+      "pupil_x": 0,
+      "pupil_y": 0,
+      "aaa": 0,
+      "eee": 0,
+      "woo": 0,
+      "smile": 1,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "image": "Elon_Musk.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载图像"
+    }
+  },
+  "10": {
+    "inputs": {
+      "image1": [
+        "5",
+        0
+      ],
+      "image2": [
+        "16",
+        0
+      ],
+      "image3": [
+        "12",
+        0
+      ],
+      "image4": [
+        "13",
+        0
+      ],
+      "image5": [
+        "14",
+        0
+      ],
+      "image6": [
+        "17",
+        0
+      ],
+      "image7": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "ImpactMakeImageList",
+    "_meta": {
+      "title": "Make Image List"
+    }
+  },
+  "11": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "12": {
+    "inputs": {
+      "rotate_pitch": -10,
+      "rotate_yaw": -10,
+      "rotate_roll": -16,
+      "blink": 0,
+      "eyebrow": 0,
+      "wink": 0,
+      "pupil_x": 0,
+      "pupil_y": 0,
+      "aaa": 0,
+      "eee": 0,
+      "woo": 0,
+      "smile": 0,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  },
+  "13": {
+    "inputs": {
+      "rotate_pitch": 10,
+      "rotate_yaw": 0,
+      "rotate_roll": 0,
+      "blink": 5,
+      "eyebrow": -10,
+      "wink": 0,
+      "pupil_x": 0,
+      "pupil_y": 5,
+      "aaa": 0,
+      "eee": 1,
+      "woo": 0,
+      "smile": 0,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  },
+  "14": {
+    "inputs": {
+      "rotate_pitch": 0,
+      "rotate_yaw": 12,
+      "rotate_roll": 0,
+      "blink": 5,
+      "eyebrow": 0,
+      "wink": 0,
+      "pupil_x": 0,
+      "pupil_y": 0,
+      "aaa": 90,
+      "eee": 0,
+      "woo": 6,
+      "smile": -0.3,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  },
+  "15": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  },
+  "16": {
+    "inputs": {
+      "rotate_pitch": 0,
+      "rotate_yaw": 0,
+      "rotate_roll": 0,
+      "blink": 0,
+      "eyebrow": 0,
+      "wink": 23,
+      "pupil_x": 0,
+      "pupil_y": 0,
+      "aaa": 0,
+      "eee": 0,
+      "woo": 0,
+      "smile": 0.3,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  },
+  "17": {
+    "inputs": {
+      "rotate_pitch": 0,
+      "rotate_yaw": 0,
+      "rotate_roll": 0,
+      "blink": -20,
+      "eyebrow": 0,
+      "wink": 0,
+      "pupil_x": 0,
+      "pupil_y": 0,
+      "aaa": 30,
+      "eee": -10,
+      "woo": 8,
+      "smile": 0,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  },
+  "18": {
+    "inputs": {
+      "rotate_pitch": 0,
+      "rotate_yaw": 0,
+      "rotate_roll": 0,
+      "blink": -12,
+      "eyebrow": -10,
+      "wink": 0,
+      "pupil_x": 0,
+      "pupil_y": 0,
+      "aaa": 0,
+      "eee": 13,
+      "woo": 0,
+      "smile": -0.3,
+      "src_ratio": 1,
+      "sample_ratio": 1,
+      "sample_parts": "OnlyExpression",
+      "crop_factor": 1.7,
+      "src_image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ExpressionEditor",
+    "_meta": {
+      "title": "Expression Editor (PHM)"
+    }
+  }
+}

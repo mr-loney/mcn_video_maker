@@ -51,14 +51,34 @@
       "title": "生成次数"
     }
   },
-  "folder_path": {
+  "start": {
     "inputs": {
       "image": "WechatIMG69.jpg",
       "upload": "image"
     },
     "class_type": "LoadImage",
     "_meta": {
-      "title": "图片/图片文件夹(_ref,_start,_center,_end,_v2v,_keepimg)"
+      "title": "首帧图片/首帧图片文件夹(_start)"
+    }
+  },
+  "center": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "中间帧图片/中间帧图片文件夹(_center)"
+    }
+  },
+  "end": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "尾帧图片/尾帧图片文件夹(_end)"
     }
   }
 }

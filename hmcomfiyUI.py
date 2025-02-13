@@ -226,7 +226,10 @@ class HMGenerateFrame(wx.Frame):
                 if flow_api:
                     # 提取 "xxxx/aaaa/test/任务名.json" 中的 "任务名"
                     task_name = flow_api.split('/')[-1].split('.')[0]
-                    cmd_titles.append(task_name)
+                    if task_name == "DreamFace_Workflow":
+                        cmd_titles.append("数字人生成")
+                    else:
+                        cmd_titles.append(task_name)
 
             # 拼接所有任务名，使用 "-" 连接
             cmd_title = "-".join(cmd_titles)
@@ -1201,16 +1204,51 @@ class TaskPanel(wx.Panel):
                 preview_bitmap.SetBitmap(wx.Bitmap(w, h))
         else:
             # 如果是图片 => 跟你原先逻辑一样
-            img = wx.Image(local_path, wx.BITMAP_TYPE_ANY)
-            w, h = preview_bitmap.GetSize()
-            img = img.Scale(w, h, wx.IMAGE_QUALITY_HIGH)
-            preview_bitmap.SetBitmap(wx.Bitmap(img))
+            # img = wx.Image(local_path, wx.BITMAP_TYPE_ANY)
+            # w, h = preview_bitmap.GetSize()
+            # img = img.Scale(w, h, wx.IMAGE_QUALITY_HIGH)
+            # preview_bitmap.SetBitmap(wx.Bitmap(img))
+            self.set_image_preview(preview_bitmap, local_path)
 
         # 更新 upload_paths 和文本框
         self.upload_paths[node_id] = local_path
         if node_id in self.image_path_ctrl:
             self.image_path_ctrl[node_id].SetValue(local_path)
     
+    def set_image_preview(slef, preview_bitmap, local_path):
+        """
+        将 local_path 对应的图像加载后，等比缩放到 preview_bitmap 的大小并显示。
+        若文件不存在或非图像，则显示空白（或可自行改成其他逻辑）。
+        """
+        if not os.path.isfile(local_path):
+            w, h = preview_bitmap.GetSize()
+            preview_bitmap.SetBitmap(wx.Bitmap(w, h))
+            return
+
+        img = wx.Image(local_path, wx.BITMAP_TYPE_ANY)
+        panel_w, panel_h = preview_bitmap.GetSize()
+
+        orig_w, orig_h = img.GetWidth(), img.GetHeight()
+        if orig_w <= 0 or orig_h <= 0:
+            # 如果图片无效，也直接退出
+            w, h = preview_bitmap.GetSize()
+            preview_bitmap.SetBitmap(wx.Bitmap(w, h))
+            return
+
+        # 计算等比缩放：找最小缩放比
+        ratio = min(panel_w / float(orig_w), panel_h / float(orig_h))
+
+        # 计算缩放后尺寸
+        new_w = max(1, int(orig_w * ratio))
+        new_h = max(1, int(orig_h * ratio))
+
+        # 执行缩放
+        img_resized = img.Scale(new_w, new_h, wx.IMAGE_QUALITY_HIGH)
+
+        # 转成位图设置给预览控件
+        bmp = wx.Bitmap(img_resized)
+        preview_bitmap.SetBitmap(bmp)
+
     def extract_first_frame(self, video_path):
         """
         用 OpenCV 打开 video_path，读第一帧并转成 wx.Image
@@ -1237,6 +1275,8 @@ class TaskPanel(wx.Panel):
     def get_task_data(self):
         raw_flow_api = self.workflow_choice.GetStringSelection()
         flow_api, _ = os.path.splitext(raw_flow_api)
+        if flow_api == "数字人生成":
+            flow_api = "DreamFace_Workflow"
         flow_inputs = {}
 
         if self.workflow_data:

@@ -1,0 +1,84 @@
+{
+  "prompt": {
+    "inputs": {
+      "text": "Short video footage",
+      "clip": [
+        "",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "视频提示词"
+    }
+  },
+  "is_vertical": {
+    "inputs": {
+      "text": "True",
+      "clip": [
+        "",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "是否竖屏(True或False)"
+    }
+  },
+  "cut_duration": {
+    "inputs": {
+      "text": "5",
+      "clip": [
+        "",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "生成时长(5或10)"
+    }
+  },
+  "cut_count": {
+    "inputs": {
+      "text": "1",
+      "clip": [
+        "",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "生成次数"
+    }
+  },
+  "start": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "首帧图片/首帧图片文件夹(_start)"
+    }
+  },
+  "center": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "中间帧图片/中间帧图片文件夹(_center)"
+    }
+  },
+  "end": {
+    "inputs": {
+      "image": "WechatIMG69.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "尾帧图片/尾帧图片文件夹(_end)"
+    }
+  }
+}

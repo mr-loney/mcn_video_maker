@@ -1,0 +1,91 @@
+{
+  "1": {
+    "inputs": {
+      "image": "01.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载图像"
+    }
+  },
+  "3": {
+    "inputs": {
+      "text_input": "",
+      "task": "more_detailed_caption",
+      "fill_mask": true,
+      "keep_model_loaded": false,
+      "max_new_tokens": 1024,
+      "num_beams": 3,
+      "do_sample": true,
+      "output_mask_select": "",
+      "seed": 1,
+      "image": [
+        "1",
+        0
+      ],
+      "florence2_model": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "Florence2Run",
+    "_meta": {
+      "title": "Florence2Run"
+    }
+  },
+  "4": {
+    "inputs": {
+      "model": "Florence-2-base",
+      "precision": "fp16",
+      "attention": "sdpa"
+    },
+    "class_type": "Florence2ModelLoader",
+    "_meta": {
+      "title": "Florence2ModelLoader"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": [
+        "3",
+        2
+      ],
+      "text2": "The image shows a modern living room with a minimalist design. The walls are painted in a light beige color and the floor is covered with a beige area rug. In the center of the room, there is a red wooden sideboard with a white vase and a few decorative items on top. Above the sideboard, there are two gray pendant lights hanging from the ceiling. On the right side of the image, there appears to be a black armchair and a small white coffee table. The overall color scheme is neutral and minimalistic."
+    },
+    "class_type": "TextPreview",
+    "_meta": {
+      "title": "Preview Text"
+    }
+  },
+  "7": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "3",
+        2
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  },
+  "15": {
+    "inputs": {
+      "root_dir": "output",
+      "file": "prompt_text.txt",
+      "append": "overwrite",
+      "insert": true,
+      "text": [
+        "3",
+        2
+      ]
+    },
+    "class_type": "SaveText|pysssss",
+    "_meta": {
+      "title": "Save Text 🐍"
+    }
+  }
+}

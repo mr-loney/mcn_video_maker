@@ -1,0 +1,590 @@
+{
+  "1": {
+    "inputs": {
+      "unet_name": "flux1-dev-fp8.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "2": {
+    "inputs": {
+      "clip_name1": "clip_l.safetensors",
+      "clip_name2": "t5xxl_fp8_e4m3fn.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "双CLIP加载器"
+    }
+  },
+  "3": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "加载VAE"
+    }
+  },
+  "4": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "正向提示词"
+    }
+  },
+  "5": {
+    "inputs": {
+      "guidance": 3.5,
+      "conditioning": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "Flux引导"
+    }
+  },
+  "15": {
+    "inputs": {
+      "weight": 1,
+      "start_at": 0,
+      "end_at": 1,
+      "model": [
+        "1",
+        0
+      ],
+      "pulid_flux": [
+        "16",
+        0
+      ],
+      "eva_clip": [
+        "17",
+        0
+      ],
+      "face_analysis": [
+        "18",
+        0
+      ],
+      "image": [
+        "41",
+        0
+      ]
+    },
+    "class_type": "ApplyPulidFlux",
+    "_meta": {
+      "title": "Apply PuLID Flux"
+    }
+  },
+  "16": {
+    "inputs": {
+      "pulid_file": "pulid_flux_v0.9.1.safetensors"
+    },
+    "class_type": "PulidFluxModelLoader",
+    "_meta": {
+      "title": "Load PuLID Flux Model"
+    }
+  },
+  "17": {
+    "inputs": {},
+    "class_type": "PulidFluxEvaClipLoader",
+    "_meta": {
+      "title": "Load Eva Clip (PuLID Flux)"
+    }
+  },
+  "18": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "PulidFluxInsightFaceLoader",
+    "_meta": {
+      "title": "Load InsightFace (PuLID Flux)"
+    }
+  },
+  "21": {
+    "inputs": {
+      "model": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "FluxForwardOverrider",
+    "_meta": {
+      "title": "FluxForwardOverrider"
+    }
+  },
+  "28": {
+    "inputs": {
+      "residual_diff_threshold": 0.12,
+      "model": [
+        "21",
+        0
+      ]
+    },
+    "class_type": "ApplyFirstBlockCachePatch",
+    "_meta": {
+      "title": "ApplyFirstBlockCachePatch"
+    }
+  },
+  "29": {
+    "inputs": {
+      "samples": [
+        "62",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "35": {
+    "inputs": {
+      "image": "clipspace/clipspace-mask-15885368.099999905.png [input]",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载换脸人物图像"
+    }
+  },
+  "36": {
+    "inputs": {
+      "threshold": 0.5,
+      "min_size": 128,
+      "max_size": 768,
+      "image": [
+        "70",
+        0
+      ],
+      "mask": [
+        "86",
+        0
+      ]
+    },
+    "class_type": "DetectFaces",
+    "_meta": {
+      "title": "DetectFaces"
+    }
+  },
+  "37": {
+    "inputs": {
+      "crop_size": 768,
+      "crop_factor": 2,
+      "mask_type": "jonathandinu",
+      "faces": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "CropFaces",
+    "_meta": {
+      "title": "CropFaces"
+    }
+  },
+  "39": {
+    "inputs": {
+      "face_detector": "blazeface_back_camera",
+      "landmarkrunner_device": "torch_gpu",
+      "face_detector_device": "cuda",
+      "face_detector_dtype": "fp16",
+      "keep_model_loaded": false
+    },
+    "class_type": "FaceAlignmentCropper",
+    "_meta": {
+      "title": "FaceShaper Load FaceAlignment"
+    }
+  },
+  "40": {
+    "inputs": {
+      "dsize": 768,
+      "scale": 2,
+      "vx_ratio": 0,
+      "vy_ratio": -0.125,
+      "face_index": 0,
+      "face_index_order": "large-small",
+      "rotate": false,
+      "cropper": [
+        "39",
+        0
+      ],
+      "source_image": [
+        "37",
+        0
+      ]
+    },
+    "class_type": "FaceShaperCropper",
+    "_meta": {
+      "title": "FaceShaper Cropper"
+    }
+  },
+  "41": {
+    "inputs": {
+      "dsize": 768,
+      "scale": 2,
+      "vx_ratio": 0,
+      "vy_ratio": -0.125,
+      "face_index": 0,
+      "face_index_order": "large-small",
+      "rotate": false,
+      "cropper": [
+        "39",
+        0
+      ],
+      "source_image": [
+        "42",
+        0
+      ]
+    },
+    "class_type": "FaceShaperCropper",
+    "_meta": {
+      "title": "FaceShaper Cropper"
+    }
+  },
+  "42": {
+    "inputs": {
+      "crop_size": 768,
+      "crop_factor": 2,
+      "mask_type": "jonathandinu",
+      "faces": [
+        "43",
+        0
+      ]
+    },
+    "class_type": "CropFaces",
+    "_meta": {
+      "title": "CropFaces"
+    }
+  },
+  "43": {
+    "inputs": {
+      "threshold": 0.5,
+      "min_size": 128,
+      "max_size": 768,
+      "image": [
+        "77",
+        0
+      ]
+    },
+    "class_type": "DetectFaces",
+    "_meta": {
+      "title": "DetectFaces"
+    }
+  },
+  "50": {
+    "inputs": {
+      "landmarkType": "ALL",
+      "AlignType": "Width",
+      "source_image": [
+        "37",
+        0
+      ],
+      "source_crop_info": [
+        "40",
+        1
+      ],
+      "target_crop_info": [
+        "41",
+        1
+      ]
+    },
+    "class_type": "FaceShaperMatchV2",
+    "_meta": {
+      "title": "FaceShaperMatchV2"
+    }
+  },
+  "53": {
+    "inputs": {
+      "pixels": [
+        "50",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE编码"
+    }
+  },
+  "54": {
+    "inputs": {
+      "samples": [
+        "53",
+        0
+      ],
+      "mask": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "SetLatentNoiseMask",
+    "_meta": {
+      "title": "设置Latent噪波遮罩"
+    }
+  },
+  "55": {
+    "inputs": {
+      "invert_mask": false,
+      "grow": 12,
+      "blur": 8,
+      "mask": [
+        "37",
+        1
+      ]
+    },
+    "class_type": "MaskFastGrow",
+    "_meta": {
+      "title": "Mask Grow Fast"
+    }
+  },
+  "56": {
+    "inputs": {
+      "images": [
+        "70",
+        0
+      ],
+      "face": [
+        "36",
+        0
+      ],
+      "crop": [
+        "61",
+        0
+      ],
+      "mask": [
+        "55",
+        0
+      ],
+      "warp": [
+        "37",
+        2
+      ]
+    },
+    "class_type": "WarpFacesBack",
+    "_meta": {
+      "title": "Warp Faces Back"
+    }
+  },
+  "59": {
+    "inputs": {
+      "model": [
+        "28",
+        0
+      ]
+    },
+    "class_type": "DifferentialDiffusion",
+    "_meta": {
+      "title": "差异扩散DifferentialDiffusion"
+    }
+  },
+  "61": {
+    "inputs": {
+      "method": "mkl",
+      "strength": 1,
+      "image_ref": [
+        "40",
+        0
+      ],
+      "image_target": [
+        "29",
+        0
+      ]
+    },
+    "class_type": "ColorMatch",
+    "_meta": {
+      "title": "Color Match"
+    }
+  },
+  "62": {
+    "inputs": {
+      "seed": 550652171452401,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "59",
+        0
+      ],
+      "positive": [
+        "5",
+        0
+      ],
+      "negative": [
+        "63",
+        0
+      ],
+      "latent_image": [
+        "54",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "63": {
+    "inputs": {
+      "conditioning": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "条件零化"
+    }
+  },
+  "64": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "88",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "70": {
+    "inputs": {
+      "upscale_method": "lanczos",
+      "megapixels": 2,
+      "image": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "ImageScaleToTotalPixels",
+    "_meta": {
+      "title": "缩放图像（像素）"
+    }
+  },
+  "77": {
+    "inputs": {
+      "upscale_method": "lanczos",
+      "megapixels": 2,
+      "image": [
+        "87",
+        0
+      ]
+    },
+    "class_type": "ImageScaleToTotalPixels",
+    "_meta": {
+      "title": "缩放图像（像素）"
+    }
+  },
+  "78": {
+    "inputs": {
+      "image": "9_mask.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载换脸人物遮罩"
+    }
+  },
+  "79": {
+    "inputs": {
+      "upscale_method": "lanczos",
+      "megapixels": 2,
+      "image": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "ImageScaleToTotalPixels",
+    "_meta": {
+      "title": "缩放图像（像素）"
+    }
+  },
+  "80": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "79",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "图像转换为遮罩"
+    }
+  },
+  "86": {
+    "inputs": {
+      "mask": [
+        "80",
+        0
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "反转遮罩"
+    }
+  },
+  "87": {
+    "inputs": {
+      "image": "3.jpg",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载目标人脸图像"
+    }
+  },
+  "88": {
+    "inputs": {
+      "method": "mkl",
+      "strength": 1,
+      "image_ref": [
+        "70",
+        0
+      ],
+      "image_target": [
+        "56",
+        0
+      ]
+    },
+    "class_type": "ColorMatch",
+    "_meta": {
+      "title": "Color Match"
+    }
+  },
+  "89": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "88",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  }
+}

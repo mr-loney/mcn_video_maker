@@ -41,6 +41,7 @@ class GenerateListFrame(wx.Frame):
 
         # 启动子线程，每5秒更新一次列表
         self.stop_thread = False
+        self.pause_thread = False
         self.thread = threading.Thread(target=self.check_loop)
         self.thread.start()
 
@@ -63,6 +64,14 @@ class GenerateListFrame(wx.Frame):
         """只隐藏窗体，不销毁、不中断扫描线程。"""
         self.Hide()
 
+    def on_pause(self):
+        """暂停操作"""
+        self.pause_thread = True
+
+    def on_resume(self):
+        """继续操作"""
+        self.pause_thread = False
+    
     def check_loop(self):
         """
         子线程:
@@ -72,8 +81,13 @@ class GenerateListFrame(wx.Frame):
           4) 如果finish=true&success=true => 异步下载 => 删除req_xxxx.json (避免重复)
         """
         while not self.stop_thread:
+            # 暂停逻辑
+            while self.pause_thread:
+                time.sleep(1)  # 暂停时等待
+            
             new_info = self.scan_folders_and_parse()
             wx.CallAfter(self.update_ui, new_info)
+            
             # sleep 5s
             for _ in range(5):
                 if self.stop_thread:
