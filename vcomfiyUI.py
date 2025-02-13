@@ -1410,7 +1410,7 @@ class TaskPanel(wx.Panel):
 
     def generate_math_random_code(self, length=8):
         """生成8位的随机字母数字组合"""
-        return '_'.join(random.choices(string.ascii_letters + string.digits, k=length))
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
     
     def get_task_data(self):
         raw_flow_api = self.workflow_choice.GetStringSelection()
@@ -1418,7 +1418,7 @@ class TaskPanel(wx.Panel):
         flow_inputs = {}
         flow_title = flow_api
         flow_code = ""
-        flow_fkey = self.generate_math_random_code()
+        flow_fkey = "_" + self.generate_math_random_code()
         if flow_api == "[普通]图生视频":
             flow_api = "runway"
         elif flow_api == "[普通]首尾帧生视频":

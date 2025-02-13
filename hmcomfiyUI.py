@@ -136,8 +136,8 @@ class HMGenerateFrame(wx.Frame):
             prev_flow_output = last_panel.flow_output_ctrl.GetValue()
             prev_local_path = last_panel.local_path_ctrl.GetValue()
             prev_workflow_name = last_panel.get_current_workflow_name()
-            prev_text_controls = last_panel.get_all_text_controls()
-            prev_upload_paths = last_panel.get_all_upload_paths()
+            # prev_text_controls = last_panel.get_all_text_controls()
+            # prev_upload_paths = last_panel.get_all_upload_paths()
 
         new_panel = TaskPanel(
             parent=self.scrolled_panel,
