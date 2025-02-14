@@ -210,7 +210,7 @@ class BatchCollectionFrame(wx.Frame):
         # 在子线程中运行处理逻辑
         threading.Thread(target=process).start()
 
-    def extract_frames_with_ffmpeg(self, video_path, output_folder, interval=2):
+    def extract_frames_with_ffmpeg(self, video_path, output_folder, interval=3):
         """
         使用 ffmpeg 抽帧，确保提取第一帧和最后一帧，命名为 start.png 和 end.png，其余每 interval 秒抽一帧。
         """
