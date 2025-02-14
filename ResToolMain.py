@@ -21,6 +21,7 @@ from generateList import GenerateListFrame
 from tts_panel import TTSGenerateFrame
 from checkweb import CheckWebUpdates
 from confirmDialog import ConfirmDialog
+from DeepSeek import DeepSeekFrame
 import sys
 import ExportVideoWithRyry
 
@@ -278,6 +279,7 @@ class FolderListApp(wx.Frame):
         invert_button = wx.Button(panel, label="反选", size=(40, -1))
         refresh_button = wx.Button(panel, label="刷新")
         listen_button = wx.Button(panel, label="开始监听")  # 初始标签“开始监听”
+        deepseek_button = wx.Button(panel, label="DeepSeek")
         pick_button = wx.Button(panel, label="资源采集/预处理")
         btn_material_list = wx.Button(panel, label="工作流状态查询")
         submit_button = wx.Button(panel, label="提交模版")
@@ -291,6 +293,7 @@ class FolderListApp(wx.Frame):
         button_sizer.Add(invert_button, flag=wx.RIGHT, border=10)
         button_sizer.Add(refresh_button, flag=wx.RIGHT, border=10)
         button_sizer.Add(listen_button, flag=wx.RIGHT, border=10)
+        button_sizer.Add(deepseek_button, flag=wx.RIGHT, border=10)
         button_sizer.Add(pick_button, flag=wx.RIGHT, border=10)
         button_sizer.Add(btn_material_list, flag=wx.RIGHT, border=10)
         button_sizer.Add(submit_button, flag=wx.CENTER, border=10)
@@ -312,6 +315,7 @@ class FolderListApp(wx.Frame):
         btn_material_list.Bind(wx.EVT_BUTTON, self.on_show_generate_list)
         pick_button.Bind(wx.EVT_BUTTON, self.on_pick_button_click)
         listen_button.Bind(wx.EVT_BUTTON, self.on_listen_button_click)
+        deepseek_button.Bind(wx.EVT_BUTTON, self.on_deepseek_button_click)
         refresh_button.Bind(wx.EVT_BUTTON, self.on_refresh)
         submit_button.Bind(wx.EVT_BUTTON, self.on_submit)
         download_bak_button.Bind(wx.EVT_BUTTON, self.download_resources_bak)  # 绑定拉取资源事件
@@ -402,6 +406,13 @@ class FolderListApp(wx.Frame):
         # 销毁主窗口
         self.Destroy()
     
+    def on_deepseek_button_click(self, event):
+        # 弹出一个新的窗口并传入父文件夹路径
+        self.timer.Stop()
+        dsg = DeepSeekFrame(self)
+        dsg.Show()
+        
+
     def on_show_generate_list(self, event):
         # 同步一下 self.folder_picker.GetPath() 给 gen_list_frame
         self.gen_list_frame.root_folder = self.folder_picker.GetPath()

@@ -23,6 +23,7 @@ a = Analysis(
         ('key.json', '.'),
         ('folder_icon.png', '.'),
         ('audio_icon.png', '.'),
+        ('version.txt', '.'),
         ('/opt/homebrew/bin/ffmpeg', 'ffmpeg'),
         ('/opt/homebrew/bin/ffprobe', 'ffprobe'),
         ('/opt/homebrew/bin/ffplay', 'ffplay'),

@@ -1,5 +1,6 @@
 1.1
 打包:pyinstaller ResToolMain.spec
+授权:sudo spctl --master-disable, 然后点击隐私设置,允许"任何来源"的应用
 
 1.2待完成需求
 ==================================
@@ -7,13 +8,11 @@
 2.批量自动注册 (暂时可以手动注册)
 3.DeepSeek文案助手 (暂时可以手动用DS)
 4.视频孪生使用skymedia模板输出
-5.批量skymedia生成视频
-6.支持vidu生成
+5.支持vidu生成
 
 付费推荐
 Magnific 重打光
 flair-ai 商品图
 suno 音乐生成
 GPT/DS 大语言生成
-
-sudo spctl --master-disable
+Pik additions 实拍视频融合

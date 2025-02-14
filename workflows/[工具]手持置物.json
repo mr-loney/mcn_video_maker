@@ -1,0 +1,636 @@
+{
+  "1": {
+    "inputs": {
+      "image": "prod (1).png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载参考衣服图像"
+    }
+  },
+  "2": {
+    "inputs": {
+      "image": "prod_mask.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载参考衣服遮罩"
+    }
+  },
+  "3": {
+    "inputs": {
+      "image": "mo_g.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载目标人物图像"
+    }
+  },
+  "4": {
+    "inputs": {
+      "image": "mo_g_mask.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载目标人物遮罩"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 0,
+      "height": 1024,
+      "interpolation": "lanczos",
+      "method": "keep proportion",
+      "condition": "downscale if bigger",
+      "multiple_of": 0,
+      "image": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "6": {
+    "inputs": {
+      "width": 0,
+      "height": [
+        "5",
+        2
+      ],
+      "interpolation": "lanczos",
+      "method": "keep proportion",
+      "condition": "downscale if bigger",
+      "multiple_of": 0,
+      "image": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "7": {
+    "inputs": {
+      "width": 0,
+      "height": 1024,
+      "interpolation": "lanczos",
+      "method": "keep proportion",
+      "condition": "downscale if bigger",
+      "multiple_of": 0,
+      "image": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "8": {
+    "inputs": {
+      "width": 0,
+      "height": [
+        "7",
+        2
+      ],
+      "interpolation": "lanczos",
+      "method": "keep proportion",
+      "condition": "downscale if bigger",
+      "multiple_of": 0,
+      "image": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
+  "13": {
+    "inputs": {
+      "direction": "left",
+      "match_image_size": true,
+      "image1": [
+        "5",
+        0
+      ],
+      "image2": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ImageConcanate",
+    "_meta": {
+      "title": "Image Concatenate"
+    }
+  },
+  "21": {
+    "inputs": {
+      "value": 0,
+      "width": [
+        "22",
+        0
+      ],
+      "height": [
+        "22",
+        1
+      ]
+    },
+    "class_type": "SolidMask",
+    "_meta": {
+      "title": "纯块遮罩"
+    }
+  },
+  "22": {
+    "inputs": {
+      "image": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "GetImageSize+",
+    "_meta": {
+      "title": "🔧 Get Image Size"
+    }
+  },
+  "23": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "图像转换为遮罩"
+    }
+  },
+  "24": {
+    "inputs": {
+      "x": [
+        "26",
+        0
+      ],
+      "y": 0,
+      "operation": "add",
+      "destination": [
+        "21",
+        0
+      ],
+      "source": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "MaskComposite",
+    "_meta": {
+      "title": "合成遮罩"
+    }
+  },
+  "26": {
+    "inputs": {
+      "expression": "a-b",
+      "a": [
+        "22",
+        0
+      ],
+      "b": [
+        "5",
+        1
+      ]
+    },
+    "class_type": "MathExpression|pysssss",
+    "_meta": {
+      "title": "Math Expression 🐍"
+    }
+  },
+  "27": {
+    "inputs": {
+      "size": "custom",
+      "custom_width": 512,
+      "custom_height": 512,
+      "color": "#000000",
+      "size_as": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: ColorImage V2",
+    "_meta": {
+      "title": "LayerUtility: ColorImage V2"
+    }
+  },
+  "28": {
+    "inputs": {
+      "direction": "left",
+      "match_image_size": true,
+      "image1": [
+        "27",
+        0
+      ],
+      "image2": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ImageConcanate",
+    "_meta": {
+      "title": "Image Concatenate"
+    }
+  },
+  "30": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "28",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "图像转换为遮罩"
+    }
+  },
+  "32": {
+    "inputs": {
+      "context_expand_pixels": 20,
+      "context_expand_factor": 1,
+      "fill_mask_holes": true,
+      "blur_mask_pixels": 16,
+      "invert_mask": false,
+      "blend_pixels": 16,
+      "rescale_algorithm": "bicubic",
+      "mode": "ranged size",
+      "force_width": 1024,
+      "force_height": 1024,
+      "rescale_factor": 1,
+      "min_width": 512,
+      "min_height": 512,
+      "max_width": [
+        "22",
+        0
+      ],
+      "max_height": [
+        "22",
+        1
+      ],
+      "padding": 32,
+      "image": [
+        "13",
+        0
+      ],
+      "mask": [
+        "24",
+        0
+      ],
+      "optional_context_mask": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "InpaintCrop",
+    "_meta": {
+      "title": "✂️ Inpaint Crop"
+    }
+  },
+  "33": {
+    "inputs": {
+      "noise_mask": true,
+      "positive": [
+        "45",
+        0
+      ],
+      "negative": [
+        "44",
+        0
+      ],
+      "vae": [
+        "41",
+        0
+      ],
+      "pixels": [
+        "32",
+        1
+      ],
+      "mask": [
+        "32",
+        2
+      ]
+    },
+    "class_type": "InpaintModelConditioning",
+    "_meta": {
+      "title": "内补模型条件"
+    }
+  },
+  "34": {
+    "inputs": {
+      "seed": 507120199126692,
+      "steps": 20,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1,
+      "model": [
+        "52",
+        0
+      ],
+      "positive": [
+        "33",
+        0
+      ],
+      "negative": [
+        "33",
+        1
+      ],
+      "latent_image": [
+        "33",
+        2
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "35": {
+    "inputs": {
+      "rescale_algorithm": "bislerp",
+      "stitch": [
+        "32",
+        0
+      ],
+      "inpainted_image": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "InpaintStitch",
+    "_meta": {
+      "title": "✂️ Inpaint Stitch"
+    }
+  },
+  "36": {
+    "inputs": {
+      "samples": [
+        "34",
+        0
+      ],
+      "vae": [
+        "41",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "37": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "50",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "38": {
+    "inputs": {
+      "unet_name": "flux1-fill-dev.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "39": {
+    "inputs": {
+      "lora_name": "PixelWave-lora-r128-v1.safetensors",
+      "strength_model": 1,
+      "model": [
+        "38",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoRA加载器（仅模型）"
+    }
+  },
+  "40": {
+    "inputs": {
+      "clip_name1": "t5xxl_fp8_e4m3fn.safetensors",
+      "clip_name2": "clip_l.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "双CLIP加载器"
+    }
+  },
+  "41": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "加载VAE"
+    }
+  },
+  "42": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "40",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "重绘提示词"
+    }
+  },
+  "43": {
+    "inputs": {
+      "guidance": 30,
+      "conditioning": [
+        "42",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "Flux引导"
+    }
+  },
+  "44": {
+    "inputs": {
+      "conditioning": [
+        "42",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "条件零化"
+    }
+  },
+  "45": {
+    "inputs": {
+      "downsampling_factor": 1,
+      "downsampling_function": "area",
+      "mode": "autocrop with mask",
+      "weight": 1,
+      "autocrop_margin": 0.1,
+      "conditioning": [
+        "43",
+        0
+      ],
+      "style_model": [
+        "46",
+        0
+      ],
+      "clip_vision": [
+        "47",
+        0
+      ],
+      "image": [
+        "6",
+        0
+      ],
+      "mask": [
+        "48",
+        0
+      ]
+    },
+    "class_type": "ReduxAdvanced",
+    "_meta": {
+      "title": "ReduxAdvanced"
+    }
+  },
+  "46": {
+    "inputs": {
+      "style_model_name": "FLUX.1-Redux-dev/flux1-redux-dev.safetensors"
+    },
+    "class_type": "StyleModelLoader",
+    "_meta": {
+      "title": "加载风格模型"
+    }
+  },
+  "47": {
+    "inputs": {
+      "clip_name": "sigclip_vision_patch14_384.safetensors"
+    },
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "加载CLIP视觉"
+    }
+  },
+  "48": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "图像转换为遮罩"
+    }
+  },
+  "49": {
+    "inputs": {
+      "model": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "DifferentialDiffusion",
+    "_meta": {
+      "title": "差异扩散DifferentialDiffusion"
+    }
+  },
+  "50": {
+    "inputs": {
+      "width": [
+        "5",
+        1
+      ],
+      "height": [
+        "5",
+        2
+      ],
+      "x": [
+        "26",
+        0
+      ],
+      "y": 0,
+      "image": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "ImageCrop",
+    "_meta": {
+      "title": "裁剪图像"
+    }
+  },
+  "51": {
+    "inputs": {
+      "model": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "FluxForwardOverrider",
+    "_meta": {
+      "title": "FluxForwardOverrider"
+    }
+  },
+  "52": {
+    "inputs": {
+      "residual_diff_threshold": 0.12,
+      "model": [
+        "51",
+        0
+      ]
+    },
+    "class_type": "ApplyFirstBlockCachePatch",
+    "_meta": {
+      "title": "ApplyFirstBlockCachePatch"
+    }
+  },
+  "60": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "50",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  }
+}
