@@ -27,7 +27,7 @@
   },
   "cut_duration": {
     "inputs": {
-      "text": "5",
+      "text": "4",
       "clip": [
         "",
         0
@@ -35,7 +35,7 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "生成时长(5或10)"
+      "title": "生成时长(4或8)"
     }
   },
   "cut_count": {
@@ -59,16 +59,6 @@
     "class_type": "LoadImage",
     "_meta": {
       "title": "首帧图片/首帧图片文件夹(_start)"
-    }
-  },
-  "center": {
-    "inputs": {
-      "image": "WechatIMG69.jpg",
-      "upload": "image"
-    },
-    "class_type": "LoadImage",
-    "_meta": {
-      "title": "中间帧图片/中间帧图片文件夹(_center)"
     }
   },
   "end": {

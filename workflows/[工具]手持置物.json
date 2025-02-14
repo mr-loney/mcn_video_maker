@@ -9,16 +9,6 @@
       "title": "加载参考产品图像"
     }
   },
-  "2": {
-    "inputs": {
-      "image": "prod_mask.png",
-      "upload": "image"
-    },
-    "class_type": "LoadImage",
-    "_meta": {
-      "title": "加载参考产品遮罩"
-    }
-  },
   "3": {
     "inputs": {
       "image": "mo_g.png",
@@ -60,27 +50,6 @@
       "multiple_of": 0,
       "image": [
         "1",
-        0
-      ]
-    },
-    "class_type": "ImageResize+",
-    "_meta": {
-      "title": "🔧 Image Resize"
-    }
-  },
-  "8": {
-    "inputs": {
-      "width": 0,
-      "height": [
-        "5",
-        2
-      ],
-      "interpolation": "lanczos",
-      "method": "keep proportion",
-      "condition": "downscale if bigger",
-      "multiple_of": 0,
-      "image": [
-        "2",
         0
       ]
     },
@@ -200,7 +169,7 @@
         0
       ],
       "image2": [
-        "8",
+        "112",
         0
       ]
     },
@@ -295,7 +264,7 @@
   },
   "34": {
     "inputs": {
-      "seed": 669608380095502,
+      "seed": 94037885835693,
       "steps": 20,
       "cfg": 1,
       "sampler_name": "euler",
@@ -416,7 +385,10 @@
   },
   "42": {
     "inputs": {
-      "text": "The image is of a jar of Tgideas Hair Mask Caviar Essence. The jar is white with a brown lid and has a label on it. The label has the brand name and product name written in black and yellow text. The product name is written in a cursive font and is centered on the jar. The size of the jar is 250ml. The background of the image is white.",
+      "text": [
+        "114",
+        2
+      ],
       "clip": [
         "40",
         0
@@ -476,8 +448,8 @@
         0
       ],
       "mask": [
-        "48",
-        0
+        "111",
+        1
       ]
     },
     "class_type": "ReduxAdvanced",
@@ -501,19 +473,6 @@
     "class_type": "CLIPVisionLoader",
     "_meta": {
       "title": "加载CLIP视觉"
-    }
-  },
-  "48": {
-    "inputs": {
-      "channel": "red",
-      "image": [
-        "8",
-        0
-      ]
-    },
-    "class_type": "ImageToMask",
-    "_meta": {
-      "title": "图像转换为遮罩"
     }
   },
   "49": {
@@ -611,7 +570,7 @@
     },
     "class_type": "GroundingDinoSAMSegment (segment anything)",
     "_meta": {
-      "title": "GroundingDinoSAMSegment (segment anything)"
+      "title": "检测重绘提示词"
     }
   },
   "74": {
@@ -656,11 +615,11 @@
       "padding": 0,
       "blur": 0,
       "mask": [
-        "48",
-        0
+        "111",
+        1
       ],
       "image_optional": [
-        "6",
+        "111",
         0
       ]
     },
@@ -747,7 +706,7 @@
   },
   "106": {
     "inputs": {
-      "expression": "a - (c - b) / 2",
+      "expression": "",
       "a": [
         "95",
         2
@@ -781,32 +740,111 @@
       "title": "Mask Grow Fast"
     }
   },
-  "109": {
+  "111": {
     "inputs": {
+      "model": "RMBG-2.0",
+      "sensitivity": 1,
+      "process_res": 1024,
+      "mask_blur": 0,
+      "mask_offset": 0,
+      "background": "Alpha",
+      "invert_output": false,
+      "optimize": "default",
       "image": [
-        "5",
-        0
-      ],
-      "mask": [
-        "108",
+        "6",
         0
       ]
     },
-    "class_type": "MaskImage",
+    "class_type": "RMBG",
     "_meta": {
-      "title": "MaskImage"
+      "title": "RMBG (Background Remover)"
     }
   },
-  "110": {
+  "112": {
     "inputs": {
-      "images": [
-        "109",
+      "mask": [
+        "111",
+        1
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "遮罩转换为图像"
+    }
+  },
+  "114": {
+    "inputs": {
+      "text_input": "",
+      "task": "more_detailed_caption",
+      "fill_mask": true,
+      "keep_model_loaded": false,
+      "max_new_tokens": 1024,
+      "num_beams": 3,
+      "do_sample": true,
+      "output_mask_select": "",
+      "seed": 970586352754656,
+      "image": [
+        "119",
+        0
+      ],
+      "florence2_model": [
+        "116",
         0
       ]
     },
-    "class_type": "PreviewImage",
+    "class_type": "Florence2Run",
     "_meta": {
-      "title": "预览图像"
+      "title": "Florence2Run"
+    }
+  },
+  "116": {
+    "inputs": {
+      "model": "Florence-2-base",
+      "precision": "fp16",
+      "attention": "sdpa"
+    },
+    "class_type": "Florence2ModelLoader",
+    "_meta": {
+      "title": "Florence2ModelLoader"
+    }
+  },
+  "117": {
+    "inputs": {
+      "purge_cache": true,
+      "purge_models": true,
+      "anything": [
+        "114",
+        2
+      ]
+    },
+    "class_type": "LayerUtility: PurgeVRAM",
+    "_meta": {
+      "title": "LayerUtility: Purge VRAM"
+    }
+  },
+  "118": {
+    "inputs": {
+      "text": [
+        "114",
+        2
+      ],
+      "text2": "The image is of a jar of Tigideas Hair Mask Caviar Essence. The jar is white with a brown lid and has a label on it. The label has the brand name \"Tigideas\" written in bold black letters at the top, followed by the product name \"Improve Hair Smoothness And Luster\" in smaller black letters. Below that, there is a description of the product, which states that it is a hair mask that helps improve rough hair, frizzy dull feeling and other problems. The product is 250ml in size."
+    },
+    "class_type": "TextPreview",
+    "_meta": {
+      "title": "Preview Text"
+    }
+  },
+  "119": {
+    "inputs": {
+      "images": [
+        "96",
+        1
+      ]
+    },
+    "class_type": "Images to RGB",
+    "_meta": {
+      "title": "Images to RGB"
     }
   }
 }

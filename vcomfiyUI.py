@@ -63,7 +63,33 @@ class VideoGenerateFrame(wx.Frame):
         # 2) workflows 文件夹 & 文件列表
         base_dir = os.path.dirname(os.path.abspath(__file__))
         self.workflows_dir = os.path.join(base_dir, "vid_workflows")
-        self.workflow_files = [f for f in os.listdir(self.workflows_dir) if f.endswith(".json")]
+        # self.workflow_files = [f for f in os.listdir(self.workflows_dir) if f.endswith(".json")]
+        # 1) 定义前缀的优先级
+        prefix_order = [
+            "[普通]",
+            "[高级]"
+        ]
+        def file_sort_key(f):
+            """
+            根据文件名前缀返回一个(优先级, 文件名)元组。
+            前缀优先级越小，排得越前；找不到任何前缀则排到最后。
+            """
+            for i, p in enumerate(prefix_order):
+                if f.startswith(p):
+                    # 找到匹配前缀 => 返回 (i, f)，确保在同级前缀内再按文件名排序
+                    return (i, f)
+            # 如果都没匹配到 => 放在最后 (len(prefix_order)) 并按文件名二次排序
+            return (len(prefix_order), f)
+        
+        # 2) 给 workflow_files 做列表推导
+        self.workflow_files = [
+            f for f in os.listdir(self.workflows_dir) 
+            if f.endswith(".json")
+        ]
+
+        # 3) 使用自定义的 sort key
+        self.workflow_files.sort(key=file_sort_key)
+        self.workflow_files.sort(key=lambda f: '[普通]图生视频' not in f)  # "generate_image" 文件会排在前面
 
         # 3) 主面板 & 滚动区
         panel = wx.Panel(self)
@@ -415,38 +441,39 @@ class VideoGenerateFrame(wx.Frame):
 
         new_local_to_ftp = {}
 
-        for local_path, ftp_path in local_to_ftp.items():
-            # 检查 key 中是否包含 "*|--|*"，如果包含，分割并保留后半段
-            if "*|--|*" in local_path:
-                # 分割并取后半段
-                parts = local_path.split("*|--|*", 1)
-                new_local_path = parts[1]  # 取后半段
-            else:
-                new_local_path = local_path  # 如果没有 "*|--|*"，保持原键
+        # for local_path, ftp_path in local_to_ftp.items():
+        #     # 检查 key 中是否包含 "*|--|*"，如果包含，分割并保留后半段
+        #     if "*|--|*" in local_path:
+        #         # 分割并取后半段
+        #         parts = local_path.split("*|--|*", 1)
+        #         new_local_path = parts[1]  # 取后半段
+        #     else:
+        #         new_local_path = local_path  # 如果没有 "*|--|*"，保持原键
 
-            # 将新的键值对存入新的字典
-            new_local_to_ftp[new_local_path] = ftp_path
+        #     # 将新的键值对存入新的字典
+        #     new_local_to_ftp[new_local_path] = ftp_path
 
-        # 更新 local_to_ftp 为新的字典
-        local_to_ftp = new_local_to_ftp
+        # # 更新 local_to_ftp 为新的字典
+        # local_to_ftp = new_local_to_ftp
 
         # **替换 submission 里的本地路径 => FTP 路径**
         for flow in submission["flows"]:
             flow_inputs = flow.get("flow_inputs", {})
+            flow_code = flow.get("flow_code", "")
             for node_id, node_data in flow_inputs.items():
                 # ---- 替换 image ----
                 if "image" in node_data:
                     image_data = node_data["image"]
                     if isinstance(image_data, str):
                         # 单文件 => 直接替换
-                        if image_data in local_to_ftp:
-                            node_data["image"] = local_to_ftp[image_data]
+                        if f"{flow_code}{image_data}" in local_to_ftp:
+                            node_data["image"] = local_to_ftp[flow_code+""+image_data]
                     elif isinstance(image_data, list):
                         # 多文件 => 逐个替换，然后只取第一个
                         new_list = []
                         for local_path in image_data:
-                            if local_path in local_to_ftp:
-                                new_list.append(local_to_ftp[local_path])
+                            if f"{flow_code}{local_path}" in local_to_ftp:
+                                new_list.append(local_to_ftp[flow_code+""+local_path])
                             else:
                                 new_list.append(local_path)
                         # 如果有多条，只保留第一条
@@ -458,8 +485,8 @@ class VideoGenerateFrame(wx.Frame):
                 # ---- 替换 video ----
                 if "video" in node_data:
                     local_vid_path = node_data["video"]
-                    if local_vid_path in local_to_ftp:
-                        node_data["video"] = local_to_ftp[local_vid_path]
+                    if f"{flow_code}{local_vid_path}" in local_to_ftp:
+                        node_data["video"] = local_to_ftp[flow_code+""+local_vid_path]
 
         return submission
     
@@ -1419,11 +1446,11 @@ class TaskPanel(wx.Panel):
         flow_title = flow_api
         flow_code = ""
         flow_fkey = "_" + self.generate_math_random_code()
+        flow_code = self.generate_math_random_code() + "*|--|*"
         if flow_api == "[普通]图生视频":
             flow_api = "runway"
         elif flow_api == "[普通]首尾帧生视频":
             flow_api = "runway"
-            flow_code = self.generate_math_random_code() + "*|--|*"
         elif flow_api == "[普通]视频生视频":
             flow_api = "runway"
         elif flow_api == "[高级]图生视频":
@@ -1432,13 +1459,13 @@ class TaskPanel(wx.Panel):
         elif flow_api == "[高级]首尾帧生视频":
             flow_api = "vidu"
             flow_inputs["type"] = "i2v"
-            flow_code = self.generate_math_random_code() + "*|--|*"
-        elif flow_api == "[高级]参考元素生视频":
+        elif flow_api == "[高级]参考图生视频":
             flow_api = "vidu"
             flow_inputs["type"] = "r2v"
-            flow_code = self.generate_math_random_code() + "*|--|*"
+        elif flow_api == "[高级]参考图生视频(文件夹)":
+            flow_api = "vidu"
+            flow_inputs["type"] = "r2v"
         
-
         if self.workflow_data:
             # 先处理 text_controls 里存储的文本/下拉框
             for node_id, fields_dict in self.text_controls.items():

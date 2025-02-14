@@ -35,7 +35,7 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "生成时长(4或8)"
+      "title": "生成时长(4)"
     }
   },
   "cut_count": {
@@ -58,7 +58,7 @@
     },
     "class_type": "LoadImage",
     "_meta": {
-      "title": "图片/图片文件夹(_start,_end,_keepimg)"
+      "title": "图片/图片文件夹(_start,_center,_end,_keepimg)"
     }
   }
 }

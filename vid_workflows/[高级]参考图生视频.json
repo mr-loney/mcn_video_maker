@@ -27,7 +27,7 @@
   },
   "cut_duration": {
     "inputs": {
-      "text": "5",
+      "text": "4",
       "clip": [
         "",
         0
@@ -35,7 +35,7 @@
     },
     "class_type": "CLIPTextEncode",
     "_meta": {
-      "title": "生成时长(5或10)"
+      "title": "生成时长(4)"
     }
   },
   "cut_count": {
