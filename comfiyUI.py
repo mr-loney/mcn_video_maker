@@ -79,6 +79,7 @@ class ImageGenerateFrame(wx.Frame):
             "[配音]",
             "[视频]",
             "[工具]",
+            "[控制网络]"
         ]
         def file_sort_key(f):
             """

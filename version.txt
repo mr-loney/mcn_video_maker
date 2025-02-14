@@ -15,3 +15,5 @@ Magnific 重打光
 flair-ai 商品图
 suno 音乐生成
 GPT/DS 大语言生成
+
+sudo spctl --master-disable
