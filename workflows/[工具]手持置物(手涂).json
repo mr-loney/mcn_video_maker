@@ -6,7 +6,7 @@
     },
     "class_type": "LoadImage",
     "_meta": {
-      "title": "加载参考产品图像"
+      "title": "加载参考衣服图像"
     }
   },
   "2": {
@@ -16,7 +16,7 @@
     },
     "class_type": "LoadImage",
     "_meta": {
-      "title": "加载参考产品遮罩"
+      "title": "加载参考衣服遮罩"
     }
   },
   "3": {
@@ -26,7 +26,17 @@
     },
     "class_type": "LoadImage",
     "_meta": {
-      "title": "加载目标置物图像"
+      "title": "加载目标人物图像"
+    }
+  },
+  "4": {
+    "inputs": {
+      "image": "mo_g_mask.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "加载目标人物遮罩"
     }
   },
   "5": {
@@ -68,11 +78,29 @@
       "title": "🔧 Image Resize"
     }
   },
+  "7": {
+    "inputs": {
+      "width": 0,
+      "height": 1024,
+      "interpolation": "lanczos",
+      "method": "keep proportion",
+      "condition": "downscale if bigger",
+      "multiple_of": 0,
+      "image": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "ImageResize+",
+    "_meta": {
+      "title": "🔧 Image Resize"
+    }
+  },
   "8": {
     "inputs": {
       "width": 0,
       "height": [
-        "5",
+        "7",
         2
       ],
       "interpolation": "lanczos",
@@ -136,6 +164,19 @@
       "title": "🔧 Get Image Size"
     }
   },
+  "23": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "图像转换为遮罩"
+    }
+  },
   "24": {
     "inputs": {
       "x": [
@@ -149,7 +190,7 @@
         0
       ],
       "source": [
-        "108",
+        "23",
         0
       ]
     },
@@ -182,7 +223,7 @@
       "custom_height": 512,
       "color": "#000000",
       "size_as": [
-        "5",
+        "7",
         0
       ]
     },
@@ -295,7 +336,7 @@
   },
   "34": {
     "inputs": {
-      "seed": 669608380095502,
+      "seed": 507120199126692,
       "steps": 20,
       "cfg": 1,
       "sampler_name": "euler",
@@ -416,7 +457,7 @@
   },
   "42": {
     "inputs": {
-      "text": "The image is of a jar of Tgideas Hair Mask Caviar Essence. The jar is white with a brown lid and has a label on it. The label has the brand name and product name written in black and yellow text. The product name is written in a cursive font and is centered on the jar. The size of the jar is 250ml. The background of the image is white.",
+      "text": "",
       "clip": [
         "40",
         0
@@ -590,223 +631,6 @@
     "class_type": "LayerUtility: PurgeVRAM",
     "_meta": {
       "title": "LayerUtility: Purge VRAM"
-    }
-  },
-  "73": {
-    "inputs": {
-      "prompt": "jar, bottle",
-      "threshold": 0.3,
-      "sam_model": [
-        "74",
-        0
-      ],
-      "grounding_dino_model": [
-        "75",
-        0
-      ],
-      "image": [
-        "5",
-        0
-      ]
-    },
-    "class_type": "GroundingDinoSAMSegment (segment anything)",
-    "_meta": {
-      "title": "GroundingDinoSAMSegment (segment anything)"
-    }
-  },
-  "74": {
-    "inputs": {
-      "model_name": "sam_vit_h_4b8939.pth",
-      "device_mode": "Prefer GPU"
-    },
-    "class_type": "SAMLoader",
-    "_meta": {
-      "title": "SAMLoader (Impact)"
-    }
-  },
-  "75": {
-    "inputs": {
-      "model_name": "GroundingDINO_SwinT_OGC (694MB)"
-    },
-    "class_type": "GroundingDinoModelLoader (segment anything)",
-    "_meta": {
-      "title": "GroundingDinoModelLoader (segment anything)"
-    }
-  },
-  "95": {
-    "inputs": {
-      "padding": 0,
-      "blur": 0,
-      "mask": [
-        "73",
-        1
-      ],
-      "image_optional": [
-        "73",
-        0
-      ]
-    },
-    "class_type": "MaskBoundingBox+",
-    "_meta": {
-      "title": "🔧 Mask Bounding Box"
-    }
-  },
-  "96": {
-    "inputs": {
-      "padding": 0,
-      "blur": 0,
-      "mask": [
-        "48",
-        0
-      ],
-      "image_optional": [
-        "6",
-        0
-      ]
-    },
-    "class_type": "MaskBoundingBox+",
-    "_meta": {
-      "title": "🔧 Mask Bounding Box"
-    }
-  },
-  "100": {
-    "inputs": {
-      "value": 1,
-      "width": [
-        "102",
-        0
-      ],
-      "height": [
-        "101",
-        0
-      ]
-    },
-    "class_type": "SolidMask",
-    "_meta": {
-      "title": "纯块遮罩"
-    }
-  },
-  "101": {
-    "inputs": {
-      "expression": "a",
-      "a": [
-        "95",
-        5
-      ]
-    },
-    "class_type": "MathExpression|pysssss",
-    "_meta": {
-      "title": "Math Expression 🐍"
-    }
-  },
-  "102": {
-    "inputs": {
-      "expression": "a * (b / c)",
-      "a": [
-        "95",
-        4
-      ],
-      "b": [
-        "96",
-        4
-      ],
-      "c": [
-        "96",
-        5
-      ]
-    },
-    "class_type": "MathExpression|pysssss",
-    "_meta": {
-      "title": "Math Expression 🐍"
-    }
-  },
-  "105": {
-    "inputs": {
-      "x": [
-        "106",
-        0
-      ],
-      "y": [
-        "95",
-        3
-      ],
-      "operation": "add",
-      "destination": [
-        "73",
-        1
-      ],
-      "source": [
-        "100",
-        0
-      ]
-    },
-    "class_type": "MaskComposite",
-    "_meta": {
-      "title": "合成遮罩"
-    }
-  },
-  "106": {
-    "inputs": {
-      "expression": "a - (c - b) / 2",
-      "a": [
-        "95",
-        2
-      ],
-      "b": [
-        "95",
-        4
-      ],
-      "c": [
-        "102",
-        0
-      ]
-    },
-    "class_type": "MathExpression|pysssss",
-    "_meta": {
-      "title": "Math Expression 🐍"
-    }
-  },
-  "108": {
-    "inputs": {
-      "invert_mask": false,
-      "grow": 4,
-      "blur": 4,
-      "mask": [
-        "105",
-        0
-      ]
-    },
-    "class_type": "MaskFastGrow",
-    "_meta": {
-      "title": "Mask Grow Fast"
-    }
-  },
-  "109": {
-    "inputs": {
-      "image": [
-        "5",
-        0
-      ],
-      "mask": [
-        "108",
-        0
-      ]
-    },
-    "class_type": "MaskImage",
-    "_meta": {
-      "title": "MaskImage"
-    }
-  },
-  "110": {
-    "inputs": {
-      "images": [
-        "109",
-        0
-      ]
-    },
-    "class_type": "PreviewImage",
-    "_meta": {
-      "title": "预览图像"
     }
   }
 }
